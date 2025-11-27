@@ -149,38 +149,6 @@ def menu_context(request):
                 {'nombre': 'Piezas de Corte en Industria', 'url': 'industria_le_stage:lista_piezas_corte_cantera_industria'},
             ]
             
-            # Agregar "Gerencia" como nivel 1
-            menu_structure['Gerencia'] = [
-                {
-                    'nombre': 'Control de Producción',
-                    'url': '#',
-                    'hijos': [
-                        {'nombre': 'Piezas de Corte', 'url': 'gerencia_le_stage:control_produccion_piezas_corte'},
-                    ]
-                },
-            ]
-            
-            # Filtrar menú según el usuario logueado
-            user = request.user if hasattr(request, 'user') else None
-            
-            if user and user.is_authenticated:
-                # Si es gerencia o superusuario, ver todo
-                if not (user.is_superuser or user.username == 'gerencia'):
-                    # Filtrar según el tipo de usuario
-                    filtered_menu = {}
-                    
-                    # Usuario de industria: solo ve Industria Le Stage
-                    if user.username == 'industria' or user.groups.filter(name='Industria').exists():
-                        if 'Industria Le Stage' in menu_structure:
-                            filtered_menu['Industria Le Stage'] = menu_structure['Industria Le Stage']
-                    
-                    # Usuario de minería: solo ve Minería Le Stage
-                    elif user.username == 'mineria' or user.groups.filter(name='Minería').exists():
-                        if 'Minería Le Stage' in menu_structure:
-                            filtered_menu['Minería Le Stage'] = menu_structure['Minería Le Stage']
-                    
-                    menu_structure = filtered_menu
-            
             # Convertir a lista para el template
             menu_data = [
                 {

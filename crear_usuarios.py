@@ -47,24 +47,24 @@ def crear_usuarios():
             username = user_config['username']
             password = user_config.pop('password')
             
-            user, created = User.objects.get_or_create(
-                username=username,
-                defaults=user_config
-            )
-            
-            if not created:
-                # Actualizar usuario existente
-                for key, value in user_config.items():
-                    setattr(user, key, value)
-                user.save()
-                print(f"Usuario '{username}' actualizado")
-            else:
+            # Obtener o crear usuario
+            try:
+                user = User.objects.get(username=username)
+                created = False
+                print(f"Usuario '{username}' ya existe, actualizando...")
+            except User.DoesNotExist:
+                user = User.objects.create_user(username=username, **user_config)
+                created = True
                 print(f"Usuario '{username}' creado")
             
-            # Establecer contraseña
+            # SIEMPRE actualizar todos los campos y la contraseña
+            for key, value in user_config.items():
+                setattr(user, key, value)
+            
+            # SIEMPRE establecer la contraseña (incluso si el usuario ya existía)
             user.set_password(password)
             user.save()
-            print(f"Contraseña establecida para '{username}'")
+            print(f"✅ Contraseña establecida para '{username}'")
         
         # Crear grupos para permisos específicos
         grupo_industria, _ = Group.objects.get_or_create(name='Industria')
@@ -100,13 +100,9 @@ def crear_usuarios():
         
         print("\n✅ Usuarios creados exitosamente!")
         print("\nUsuarios:")
-        print("  - gerencia (superusuario - acceso total)")
-        print("  - industria (acceso a industria)")
-        print("  - mineria (acceso a minería)")
-        print("\nContraseñas:")
-        print("  - gerencia.2025")
-        print("  - industria.2025")
-        print("  - mineria.2025")
+        print("  - gerencia (superusuario - acceso total) → contraseña: gerencia.2025")
+        print("  - industria (acceso a industria) → contraseña: industria.2025")
+        print("  - mineria (acceso a minería) → contraseña: mineria.2025")
 
 if __name__ == '__main__':
     crear_usuarios()

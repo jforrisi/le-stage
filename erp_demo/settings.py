@@ -4,7 +4,6 @@ Django settings for erp_demo project.
 
 from pathlib import Path
 import os
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,26 +13,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Lee de variable de entorno, si no existe usa una por defecto (solo para desarrollo)
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-demo-key-change-in-production-12345')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# En Railway automáticamente DEBUG=False, localmente DEBUG=True
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# ALLOWED_HOSTS: En Railway acepta cualquier dominio .railway.app automáticamente
+# ALLOWED_HOSTS: Lee de variable de entorno o usa valores por defecto
 ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS', '')
 if ALLOWED_HOSTS_ENV:
     ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',') if host.strip()]
 else:
-    # Si no está configurado, aceptar todos los dominios de Railway
-    ALLOWED_HOSTS = ['*']  # Acepta cualquier dominio (Railway maneja la seguridad)
+    # Localmente solo localhost, en Railway se debe configurar
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # CSRF Trusted Origins para Railway
 CSRF_TRUSTED_ORIGINS_ENV = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
 if CSRF_TRUSTED_ORIGINS_ENV:
     CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS_ENV.split(',') if origin.strip()]
 else:
-    # Si no está configurado, aceptar todos los dominios de Railway
-    CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', 'https://*.up.railway.app']
+    # Localmente
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 
 # Application definition
@@ -60,9 +61,6 @@ INSTALLED_APPS = [
 
     'compras.compras_ingreso',
     'compras.compras_devoluciones',
-    'mineria_le_stage',
-    'industria_le_stage',
-    'gerencia_le_stage',
 
 ]
 
@@ -81,7 +79,7 @@ ROOT_URLCONF = 'erp_demo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'erp_demo' / 'templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,21 +96,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'erp_demo.wsgi.application'
 
-# Configuración de autenticación
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/login/'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 # Si está en Railway (tiene DATABASE_URL) → usa PostgreSQL
 # Si está local (no tiene DATABASE_URL) → usa SQLite
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
     # Producción: PostgreSQL en Railway
+    import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,

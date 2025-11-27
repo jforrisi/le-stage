@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
-from erp_demo.decorators import acceso_por_app
 from .models import TipoPulidoPiezas
 from .forms import TipoPulidoPiezasForm, PiezasCorteCanteraFormIndustria
 from mineria_le_stage.models import PiezasCorteCantera
@@ -11,7 +10,6 @@ from erp_demo.config import EMPRESA_NOMBRE
 
 # ==================== PROCESOS DE PULIDO PIEZAS DE CORTE ====================
 
-@acceso_por_app(['industria_le_stage', 'gerencia_le_stage'])
 def lista_tipos_pulido_piezas(request):
     """Lista de tipos de pulido de piezas"""
     tipos = TipoPulidoPiezas.objects.all().order_by('nombre')
@@ -33,7 +31,6 @@ def lista_tipos_pulido_piezas(request):
     return render(request, 'industria_le_stage/tipos_pulido_piezas/lista_tipos_pulido_piezas.html', context)
 
 
-@acceso_por_app(['industria_le_stage', 'gerencia_le_stage'])
 def crear_tipo_pulido_piezas(request):
     """Crear nuevo tipo de pulido de piezas"""
     if request.method == 'POST':
@@ -53,7 +50,6 @@ def crear_tipo_pulido_piezas(request):
     return render(request, 'industria_le_stage/tipos_pulido_piezas/form_tipo_pulido_piezas.html', context)
 
 
-@acceso_por_app(['industria_le_stage', 'gerencia_le_stage'])
 def editar_tipo_pulido_piezas(request, id):
     """Editar tipo de pulido de piezas"""
     tipo = get_object_or_404(TipoPulidoPiezas, id=id)
@@ -76,7 +72,6 @@ def editar_tipo_pulido_piezas(request, id):
     return render(request, 'industria_le_stage/tipos_pulido_piezas/form_tipo_pulido_piezas.html', context)
 
 
-@acceso_por_app(['industria_le_stage', 'gerencia_le_stage'])
 def eliminar_tipo_pulido_piezas(request, id):
     """Eliminar tipo de pulido de piezas"""
     tipo = get_object_or_404(TipoPulidoPiezas, id=id)
@@ -96,7 +91,6 @@ def eliminar_tipo_pulido_piezas(request, id):
 
 # ==================== PIEZAS CORTE CANTERA (INDUSTRIA) ====================
 
-@acceso_por_app(['industria_le_stage', 'gerencia_le_stage'])
 def lista_piezas_corte_cantera_industria(request):
     """Lista de piezas corte cantera para industria - Solo muestra datos básicos"""
     piezas = PiezasCorteCantera.objects.all().select_related('equipo_minero', 'equipo_corte', 'tipo_proceso').order_by('-fecha_creacion')
@@ -109,7 +103,7 @@ def lista_piezas_corte_cantera_industria(request):
             numero__icontains=busqueda
         )
     
-    paginator = Paginator(piezas, 20)  # 20 registros por página para mejor rendimiento
+    paginator = Paginator(piezas, 15)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -139,12 +133,11 @@ def lista_piezas_corte_cantera_industria(request):
         'piezas': page_obj,
         'busqueda': busqueda,
         'empresa_nombre': EMPRESA_NOMBRE,
-        'titulo': 'Piezas de Corte en Industria',
+        'titulo': 'Piezas de Corte en Cantera',
     }
     return render(request, 'industria_le_stage/piezas_corte_cantera/lista_piezas_corte_cantera_industria.html', context)
 
 
-@acceso_por_app(['industria_le_stage', 'gerencia_le_stage'])
 @require_http_methods(["POST"])
 def guardar_datos_industria_ajax(request, id):
     """Guardar datos de industria vía AJAX"""
@@ -165,7 +158,6 @@ def guardar_datos_industria_ajax(request, id):
         }, status=400)
 
 
-@acceso_por_app(['industria_le_stage', 'gerencia_le_stage'])
 def detalle_pieza_corte_cantera_industria(request, id):
     """Ver detalles completos de una pieza (modal o página)"""
     pieza = get_object_or_404(PiezasCorteCantera.objects.select_related('equipo_minero', 'equipo_corte', 'tipo_proceso'), id=id)

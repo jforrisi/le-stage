@@ -7,7 +7,6 @@ from django.forms import formset_factory
 from django.db.models import Sum
 from django.db import models
 from datetime import date
-from erp_demo.decorators import acceso_por_app
 from .models import (
     Equipo, EquipoCorte, PiedrasCanteras, ProduccionEquipo, Costos,
     PiezasCorteCantera
@@ -24,7 +23,6 @@ from erp_demo.config import EMPRESA_NOMBRE
 
 # ==================== EQUIPOS ====================
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def lista_equipos(request):
     """Lista de equipos con paginación"""
     equipos = Equipo.objects.all().order_by('nombre_equipo')
@@ -50,7 +48,6 @@ def lista_equipos(request):
     return render(request, 'mineria_le_stage/equipos/lista_equipos.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def crear_equipo(request):
     """Crear nuevo equipo"""
     if request.method == 'POST':
@@ -70,7 +67,6 @@ def crear_equipo(request):
     return render(request, 'mineria_le_stage/equipos/form_equipo.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def editar_equipo(request, id_equipo):
     """Editar equipo existente"""
     equipo = get_object_or_404(Equipo, id_equipo=id_equipo)
@@ -93,7 +89,6 @@ def editar_equipo(request, id_equipo):
     return render(request, 'mineria_le_stage/equipos/form_equipo.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def detalle_equipo(request, id_equipo):
     """Detalle de equipo"""
     equipo = get_object_or_404(Equipo, id_equipo=id_equipo)
@@ -106,7 +101,6 @@ def detalle_equipo(request, id_equipo):
     return render(request, 'mineria_le_stage/equipos/detalle_equipo.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def eliminar_equipo(request, id_equipo):
     """Eliminar equipo"""
     equipo = get_object_or_404(Equipo, id_equipo=id_equipo)
@@ -125,7 +119,6 @@ def eliminar_equipo(request, id_equipo):
 
 # ==================== EQUIPOS CORTE ====================
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def lista_equipos_corte(request):
     """Lista de equipos de corte con paginación"""
     equipos = EquipoCorte.objects.all().order_by('nombre_equipo')
@@ -151,7 +144,6 @@ def lista_equipos_corte(request):
     return render(request, 'mineria_le_stage/equipos_corte/lista_equipos_corte.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def crear_equipo_corte(request):
     """Crear nuevo equipo de corte"""
     if request.method == 'POST':
@@ -171,7 +163,6 @@ def crear_equipo_corte(request):
     return render(request, 'mineria_le_stage/equipos_corte/form_equipo_corte.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def editar_equipo_corte(request, id_equipo):
     """Editar equipo de corte existente"""
     equipo = get_object_or_404(EquipoCorte, id_equipo=id_equipo)
@@ -194,7 +185,6 @@ def editar_equipo_corte(request, id_equipo):
     return render(request, 'mineria_le_stage/equipos_corte/form_equipo_corte.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def detalle_equipo_corte(request, id_equipo):
     """Detalle de equipo de corte"""
     equipo = get_object_or_404(EquipoCorte, id_equipo=id_equipo)
@@ -207,7 +197,6 @@ def detalle_equipo_corte(request, id_equipo):
     return render(request, 'mineria_le_stage/equipos_corte/detalle_equipo_corte.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def eliminar_equipo_corte(request, id_equipo):
     """Eliminar equipo de corte"""
     equipo = get_object_or_404(EquipoCorte, id_equipo=id_equipo)
@@ -226,7 +215,6 @@ def eliminar_equipo_corte(request, id_equipo):
 
 # ==================== PIEDRAS/CANTERAS ====================
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def lista_piedras_canteras(request):
     """Lista de piedras/canteras con paginación"""
     piedras = PiedrasCanteras.objects.all().select_related('familia_producto', 'producto').order_by('familia_producto', 'producto')
@@ -252,7 +240,6 @@ def lista_piedras_canteras(request):
     return render(request, 'mineria_le_stage/piedras_canteras/lista_piedras_canteras.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def crear_piedra_cantera(request):
     """Crear nueva piedra/cantera"""
     if request.method == 'POST':
@@ -272,7 +259,6 @@ def crear_piedra_cantera(request):
     return render(request, 'mineria_le_stage/piedras_canteras/form_piedra_cantera.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def editar_piedra_cantera(request, id):
     """Editar piedra/cantera existente"""
     piedra = get_object_or_404(PiedrasCanteras, id=id)
@@ -295,7 +281,6 @@ def editar_piedra_cantera(request, id):
     return render(request, 'mineria_le_stage/piedras_canteras/form_piedra_cantera.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def eliminar_piedra_cantera(request, id):
     """Eliminar piedra/cantera"""
     piedra = get_object_or_404(PiedrasCanteras, id=id)
@@ -332,7 +317,6 @@ def obtener_productos_familia(request):
 
 # ==================== PRODUCCIÓN EQUIPOS ====================
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def lista_produccion_equipos(request):
     """Lista de producción agrupada por Equipo + Mes/Año"""
     # Obtener todas las producciones agrupadas por equipo y mes
@@ -388,7 +372,6 @@ def lista_produccion_equipos(request):
     return render(request, 'mineria_le_stage/produccion_equipos/lista_produccion_equipos.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def crear_produccion_equipo(request):
     """Crear nueva producción con formset de líneas"""
     # Obtener todas las piedras para el formset
@@ -488,7 +471,6 @@ def crear_produccion_equipo(request):
     return render(request, 'mineria_le_stage/produccion_equipos/form_produccion_equipo.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def editar_produccion_equipo(request, equipo_id, mes_año):
     """Editar producción de un equipo y mes específico (muestra todas las líneas)"""
     from datetime import datetime
@@ -623,7 +605,6 @@ def editar_produccion_equipo(request, equipo_id, mes_año):
     return render(request, 'mineria_le_stage/produccion_equipos/form_produccion_equipo.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def eliminar_produccion_equipo_mes(request, equipo_id, mes_año):
     """Eliminar todas las producciones de un equipo y mes"""
     from datetime import datetime
@@ -673,7 +654,6 @@ def obtener_puntos_sugeridos(request):
 
 # ==================== COSTOS ====================
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def lista_costos(request):
     """Lista de costos agrupada por Equipo + Mes/Año"""
     from datetime import datetime
@@ -726,7 +706,6 @@ def lista_costos(request):
     return render(request, 'mineria_le_stage/costos/lista_costos.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def crear_costo(request):
     """Crear nuevo costo con formset de líneas (una por rubro)"""
     # Obtener todos los rubros
@@ -817,7 +796,6 @@ def crear_costo(request):
     return render(request, 'mineria_le_stage/costos/form_costo.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def editar_costo(request, equipo_id, fecha):
     """Editar costos de un equipo y mes específico (muestra todas las líneas)"""
     from datetime import datetime
@@ -937,7 +915,6 @@ def editar_costo(request, equipo_id, fecha):
     return render(request, 'mineria_le_stage/costos/form_costo.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def eliminar_costo_mes(request, equipo_id, fecha):
     """Eliminar todos los costos de un equipo y mes"""
     from datetime import datetime
@@ -970,7 +947,6 @@ def eliminar_costo_mes(request, equipo_id, fecha):
 
 # ==================== PIEZAS CORTE CANTERA ====================
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def lista_piezas_corte_cantera(request):
     """Lista de piezas corte cantera (solo vista de minería)"""
     piezas = PiezasCorteCantera.objects.all().order_by('-fecha_creacion')
@@ -983,7 +959,7 @@ def lista_piezas_corte_cantera(request):
             numero__icontains=busqueda
         )
     
-    paginator = Paginator(piezas, 20)  # 20 registros por página para mejor rendimiento
+    paginator = Paginator(piezas, 15)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -996,7 +972,6 @@ def lista_piezas_corte_cantera(request):
     return render(request, 'mineria_le_stage/piezas_corte_cantera/lista_piezas_corte_cantera.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def crear_pieza_corte_cantera(request):
     """Crear nueva pieza corte cantera (solo campos de minería)"""
     if request.method == 'POST':
@@ -1016,7 +991,6 @@ def crear_pieza_corte_cantera(request):
     return render(request, 'mineria_le_stage/piezas_corte_cantera/form_pieza_corte_cantera.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def editar_pieza_corte_cantera(request, id):
     """Editar pieza corte cantera (solo campos de minería)"""
     pieza = get_object_or_404(PiezasCorteCantera, id=id)
@@ -1039,7 +1013,6 @@ def editar_pieza_corte_cantera(request, id):
     return render(request, 'mineria_le_stage/piezas_corte_cantera/form_pieza_corte_cantera.html', context)
 
 
-@acceso_por_app(['mineria_le_stage', 'gerencia_le_stage'])
 def eliminar_pieza_corte_cantera(request, id):
     """Eliminar pieza corte cantera"""
     pieza = get_object_or_404(PiezasCorteCantera, id=id)
