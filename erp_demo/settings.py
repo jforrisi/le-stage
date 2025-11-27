@@ -19,7 +19,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-demo-key-change-in-pr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
+# ALLOWED_HOSTS: En Railway acepta cualquier dominio .railway.app automáticamente
+ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS', '')
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',') if host.strip()]
+else:
+    # Si no está configurado, aceptar todos los dominios de Railway
+    ALLOWED_HOSTS = ['*']  # Acepta cualquier dominio (Railway maneja la seguridad)
 
 
 # Application definition
