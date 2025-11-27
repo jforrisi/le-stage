@@ -9,16 +9,16 @@ def poblar_tipos_articulo(apps, schema_editor):
     TipoArticulo = apps.get_model('articulos', 'TipoArticulo')
     
     tipos = [
-        {'codigo': 'SER', 'nombre': 'Servicios', 'stockeable': 'NO', 'se_compra': 'SI', 'loteable': 'NO'},
-        {'codigo': 'INS', 'nombre': 'Insumos', 'stockeable': 'SI', 'se_compra': 'SI', 'loteable': 'SI'},
-        {'codigo': 'PPR', 'nombre': 'Productos en Proceso', 'stockeable': 'SI', 'se_compra': 'NO', 'loteable': 'SI'},
-        {'codigo': 'PTE', 'nombre': 'Producto Terminado', 'stockeable': 'SI', 'se_compra': 'NO', 'loteable': 'SI'},
-        {'codigo': 'PRE', 'nombre': 'Productos para Reventa', 'stockeable': 'SI', 'se_compra': 'SI', 'loteable': 'SI'},
-        {'codigo': 'MAQ', 'nombre': 'Maquinaria', 'stockeable': 'SI', 'se_compra': 'SI', 'loteable': 'NO'},
-        {'codigo': 'INM', 'nombre': 'Inmuebles', 'stockeable': 'SI', 'se_compra': 'SI', 'loteable': 'NO'},
-        {'codigo': 'OBU', 'nombre': 'Otros Bienes de Uso', 'stockeable': 'SI', 'se_compra': 'SI', 'loteable': 'NO'},
-        {'codigo': 'MAN', 'nombre': 'Mantenimiento', 'stockeable': 'SI', 'se_compra': 'SI', 'loteable': 'NO'},
-        {'codigo': 'PTR', 'nombre': 'Presupuesto de Trabajo', 'stockeable': 'NO', 'se_compra': 'NO', 'loteable': 'NO'},
+        {'codigo': 'SER', 'nombre': 'Servicios', 'stockeable': 'NO', 'se_compra': 'SI'},
+        {'codigo': 'INS', 'nombre': 'Insumos', 'stockeable': 'SI', 'se_compra': 'SI'},
+        {'codigo': 'PPR', 'nombre': 'Productos en Proceso', 'stockeable': 'SI', 'se_compra': 'NO'},
+        {'codigo': 'PTE', 'nombre': 'Producto Terminado', 'stockeable': 'SI', 'se_compra': 'NO'},
+        {'codigo': 'PRE', 'nombre': 'Productos para Reventa', 'stockeable': 'SI', 'se_compra': 'SI'},
+        {'codigo': 'MAQ', 'nombre': 'Maquinaria', 'stockeable': 'SI', 'se_compra': 'SI'},
+        {'codigo': 'INM', 'nombre': 'Inmuebles', 'stockeable': 'SI', 'se_compra': 'SI'},
+        {'codigo': 'OBU', 'nombre': 'Otros Bienes de Uso', 'stockeable': 'SI', 'se_compra': 'SI'},
+        {'codigo': 'MAN', 'nombre': 'Mantenimiento', 'stockeable': 'SI', 'se_compra': 'SI'},
+        {'codigo': 'PTR', 'nombre': 'Presupuesto de Trabajo', 'stockeable': 'NO', 'se_compra': 'NO'},
     ]
     
     for tipo_data in tipos:
@@ -28,7 +28,6 @@ def poblar_tipos_articulo(apps, schema_editor):
                 'nombre': tipo_data['nombre'],
                 'stockeable': tipo_data['stockeable'],
                 'se_compra': tipo_data['se_compra'],
-                'loteable': tipo_data.get('loteable', 'NO')
             }
         )
 
