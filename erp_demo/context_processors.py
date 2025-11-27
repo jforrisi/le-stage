@@ -149,6 +149,17 @@ def menu_context(request):
                 {'nombre': 'Piezas de Corte en Industria', 'url': 'industria_le_stage:lista_piezas_corte_cantera_industria'},
             ]
             
+            # Agregar "Gerencia" como nivel 1
+            menu_structure['Gerencia'] = [
+                {
+                    'nombre': 'Control de Producción',
+                    'url': '#',
+                    'hijos': [
+                        {'nombre': 'Piezas de Corte', 'url': 'gerencia_le_stage:control_produccion_piezas_corte'},
+                    ]
+                }
+            ]
+            
             # Convertir a lista para el template
             menu_data = [
                 {
@@ -205,6 +216,18 @@ def menu_context(request):
                 'hijos': [
                     {'nombre': 'Tipos de Pulido Piezas', 'url': 'industria_le_stage:lista_tipos_pulido_piezas'},
                     {'nombre': 'Piezas de Corte en Industria', 'url': 'industria_le_stage:lista_piezas_corte_cantera_industria'},
+                ]
+            },
+            {
+                'nombre': 'Gerencia',
+                'hijos': [
+                    {
+                        'nombre': 'Control de Producción',
+                        'url': '#',
+                        'hijos': [
+                            {'nombre': 'Piezas de Corte', 'url': 'gerencia_le_stage:control_produccion_piezas_corte'},
+                        ]
+                    }
                 ]
             }
         ]
