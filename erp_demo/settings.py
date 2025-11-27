@@ -27,6 +27,14 @@ else:
     # Si no está configurado, aceptar todos los dominios de Railway
     ALLOWED_HOSTS = ['*']  # Acepta cualquier dominio (Railway maneja la seguridad)
 
+# CSRF Trusted Origins para Railway
+CSRF_TRUSTED_ORIGINS_ENV = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+if CSRF_TRUSTED_ORIGINS_ENV:
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS_ENV.split(',') if origin.strip()]
+else:
+    # Si no está configurado, aceptar todos los dominios de Railway
+    CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', 'https://*.up.railway.app']
+
 
 # Application definition
 
