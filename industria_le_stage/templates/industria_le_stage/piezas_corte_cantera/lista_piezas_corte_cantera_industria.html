@@ -1,0 +1,244 @@
+{% extends 'clientes/base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - ERP{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por nombre o número..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'industria_le_stage:lista_piezas_corte_cantera_industria' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if piezas_con_formularios %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Piedra</th>
+                    <th>Número</th>
+                    <th>Equipo Minero</th>
+                    <th>Equipo de Corte</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in piezas_con_formularios %}
+                <tr>
+                    <td>{{ item.pieza.id }}</td>
+                    <td>{{ item.pieza.nombre_piedra|default:"-" }}</td>
+                    <td>{{ item.pieza.numero|default:"-" }}</td>
+                    <td>{{ item.pieza.equipo_minero|default:"-" }}</td>
+                    <td>{{ item.pieza.equipo_corte|default:"-" }}</td>
+                    <td class="actions">
+                        <button 
+                            type="button" 
+                            class="btn btn-sm {% if item.tiene_datos_industria %}btn-warning{% else %}btn-primary{% endif %}"
+                            onclick="toggleForm({{ item.pieza.id }})"
+                        >
+                            {% if item.tiene_datos_industria %}Editar{% else %}Agregar datos industria{% endif %}
+                        </button>
+                        <a 
+                            href="{% url 'industria_le_stage:detalle_pieza_corte_cantera_industria' item.pieza.id %}" 
+                            class="btn btn-sm btn-info"
+                            target="_blank"
+                        >
+                            Ver piedra
+                        </a>
+                    </td>
+                </tr>
+                <!-- Formulario desplegable -->
+                <tr id="form-row-{{ item.pieza.id }}" style="display: none;">
+                    <td colspan="6">
+                        <div class="form-container-inline" style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 10px 0;">
+                            <h4 style="margin-bottom: 15px;">
+                                {% if item.tiene_datos_industria %}Editar{% else %}Agregar{% endif %} Datos de Industria - Pieza {{ item.pieza.id }}
+                            </h4>
+                            <form 
+                                id="form-{{ item.pieza.id }}" 
+                                method="post" 
+                                action="{% url 'industria_le_stage:guardar_datos_industria_ajax' item.pieza.id %}"
+                                class="form-industria"
+                            >
+                                {% csrf_token %}
+                                
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label for="{{ item.form.fecha_industria.id_for_label }}">{{ item.form.fecha_industria.label }}</label>
+                                        {{ item.form.fecha_industria }}
+                                        {% if item.form.fecha_industria.errors %}
+                                            <div class="error-message">{{ item.form.fecha_industria.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ item.form.kilos_recepcion_industria.id_for_label }}">{{ item.form.kilos_recepcion_industria.label }}</label>
+                                        {{ item.form.kilos_recepcion_industria }}
+                                        {% if item.form.kilos_recepcion_industria.errors %}
+                                            <div class="error-message">{{ item.form.kilos_recepcion_industria.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ item.form.tipo_piedra.id_for_label }}">{{ item.form.tipo_piedra.label }}</label>
+                                        {{ item.form.tipo_piedra }}
+                                        {% if item.form.tipo_piedra.errors %}
+                                            <div class="error-message">{{ item.form.tipo_piedra.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ item.form.tipo_proceso.id_for_label }}">{{ item.form.tipo_proceso.label }}</label>
+                                        {{ item.form.tipo_proceso }}
+                                        {% if item.form.tipo_proceso.errors %}
+                                            <div class="error-message">{{ item.form.tipo_proceso.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label for="{{ item.form.kilos_despues_tallado.id_for_label }}">{{ item.form.kilos_despues_tallado.label }}</label>
+                                        {{ item.form.kilos_despues_tallado }}
+                                        {% if item.form.kilos_despues_tallado.errors %}
+                                            <div class="error-message">{{ item.form.kilos_despues_tallado.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ item.form.precio_por_kilo_tallado.id_for_label }}">{{ item.form.precio_por_kilo_tallado.label }}</label>
+                                        {{ item.form.precio_por_kilo_tallado }}
+                                        {% if item.form.precio_por_kilo_tallado.errors %}
+                                            <div class="error-message">{{ item.form.precio_por_kilo_tallado.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ item.form.pulido_por_kilo.id_for_label }}">{{ item.form.pulido_por_kilo.label }}</label>
+                                        {{ item.form.pulido_por_kilo }}
+                                        {% if item.form.pulido_por_kilo.errors %}
+                                            <div class="error-message">{{ item.form.pulido_por_kilo.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ item.form.extra_carlos.id_for_label }}">{{ item.form.extra_carlos.label }}</label>
+                                        {{ item.form.extra_carlos }}
+                                        {% if item.form.extra_carlos.errors %}
+                                            <div class="error-message">{{ item.form.extra_carlos.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions" style="margin-top: 15px;">
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                    <button type="button" class="btn btn-secondary" onclick="toggleForm({{ item.pieza.id }})">Cancelar</button>
+                                </div>
+                            </form>
+                            <div id="message-{{ item.pieza.id }}" style="margin-top: 10px;"></div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if piezas.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if piezas.has_previous %}
+                <a href="?page={{ piezas.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ piezas.number }} de {{ piezas.paginator.num_pages }}
+                {% if piezas.paginator.count %}
+                    ({{ piezas.paginator.count }} registro{{ piezas.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if piezas.has_next %}
+                <a href="?page={{ piezas.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron piezas de corte.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleForm(piezaId) {
+    const formRow = document.getElementById('form-row-' + piezaId);
+    if (formRow.style.display === 'none') {
+        formRow.style.display = 'table-row';
+    } else {
+        formRow.style.display = 'none';
+        // Limpiar mensajes
+        document.getElementById('message-' + piezaId).innerHTML = '';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejar envío de formularios vía AJAX
+    document.querySelectorAll('.form-industria').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formId = form.id;
+            const piezaId = formId.replace('form-', '');
+            const messageDiv = document.getElementById('message-' + piezaId);
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    messageDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                    // Ocultar formulario después de 2 segundos
+                    setTimeout(function() {
+                        toggleForm(piezaId);
+                        // Recargar página para actualizar el estado
+                        location.reload();
+                    }, 2000);
+                } else {
+                    let errorsHtml = '<div class="alert alert-danger"><ul>';
+                    for (let field in data.errors) {
+                        data.errors[field].forEach(function(error) {
+                            errorsHtml += '<li>' + error + '</li>';
+                        });
+                    }
+                    errorsHtml += '</ul></div>';
+                    messageDiv.innerHTML = errorsHtml;
+                }
+            })
+            .catch(error => {
+                messageDiv.innerHTML = '<div class="alert alert-danger">Error al guardar: ' + error + '</div>';
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+

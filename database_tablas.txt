@@ -1,0 +1,110 @@
+==========================================
+TABLAS DEL SISTEMA ERP - NOMBRES REALES
+==========================================
+
+TABLAS DE CONFIGURACIÓN (prefijo: config_)
+-------------------------------------------
+
+1. config_articulos_maestro       -> Modelo: Articulo
+2. config_moneda                   -> Modelo: Moneda (SINGULAR, no plural)
+3. config_articulos_tipoarticulo   -> Modelo: TipoArticulo
+4. config_articulos_familia        -> Modelo: Familia
+5. config_articulos_subfamilia     -> Modelo: SubFamilia
+6. config_iva                      -> Modelo: IVA (YA CONFIGURADO)
+7. config_codigoproveedorcompra    -> Modelo: CodigoProveedorCompra
+8. config_proveedores_maestro      -> Modelo: Proveedor
+9. config_cliente_maestro          -> Modelo: Cliente
+10. config_formapago               -> Modelo: FormaPago
+11. deposito_deposito               -> Modelo: Deposito (NO tiene prefijo config_)
+12. config_documentos_maestro       -> Modelo: Documento
+13. config_disponibilidades        -> Modelo: Disponibilidad (YA CONFIGURADO)
+14. config_transacciones           -> Modelo: Transaccion (YA CONFIGURADO)
+15. config_transacciondocumento    -> Modelo: TransaccionDocumento (YA CONFIGURADO)
+16. config_cliente_canalcomercial  -> Modelo: CanalComercial (YA CONFIGURADO)
+
+TABLAS DE COMPRAS (prefijo: compras_)
+--------------------------------------
+
+17. compras_cabezal                -> Modelo: ComprasCabezal (YA CONFIGURADO)
+18. compras_lineas                 -> Modelo: ComprasLineas (YA CONFIGURADO)
+19. compras_devoluciones_cabezal   -> Modelo: ComprasDevolucionesCabezal (YA CONFIGURADO)
+20. compras_devoluciones_lineas    -> Modelo: ComprasDevolucionesLineas (YA CONFIGURADO)
+
+TABLAS DEL SISTEMA DJANGO (no modificar)
+-----------------------------------------
+
+- auth_group
+- auth_group_permissions
+- auth_permission
+- auth_user
+- auth_user_groups
+- auth_user_user_permissions
+
+==========================================
+RESUMEN
+==========================================
+
+TOTAL DE TABLAS: 25 (20 del ERP + 5 de Django)
+
+YA CONFIGURADAS (9 tablas):
+- config_iva
+- config_disponibilidades
+- config_transacciones
+- config_transacciondocumento
+- config_cliente_canalcomercial
+- compras_cabezal
+- compras_lineas
+- compras_devoluciones_cabezal
+- compras_devoluciones_lineas
+
+PENDIENTES DE CONFIGURAR (11 tablas):
+- config_articulos_maestro (actualmente configurado como 'config_articulos' - INCORRECTO)
+- config_moneda (actualmente configurado como 'config_monedas' - INCORRECTO)
+- config_articulos_tipoarticulo (actualmente configurado como 'config_tipoarticulo' - INCORRECTO)
+- config_articulos_familia (actualmente configurado como 'config_familias' - INCORRECTO)
+- config_articulos_subfamilia (actualmente configurado como 'config_subfamilias' - INCORRECTO)
+- config_codigoproveedorcompra (ya configurado correctamente)
+- config_proveedores_maestro
+- config_cliente_maestro
+- config_formapago
+- deposito_deposito
+- config_documentos_maestro
+
+==========================================
+CORRECCIONES NECESARIAS EN models.py
+==========================================
+
+ARCHIVO: configuracion/articulos/models.py
+
+1. Articulo:
+   - ACTUAL: db_table = 'config_articulos'
+   - DEBE SER: db_table = 'config_articulos_maestro'
+
+2. Moneda:
+   - ACTUAL: db_table = 'config_monedas'
+   - DEBE SER: db_table = 'config_moneda' (SINGULAR)
+
+3. TipoArticulo:
+   - ACTUAL: db_table = 'config_tipoarticulo'
+   - DEBE SER: db_table = 'config_articulos_tipoarticulo'
+
+4. Familia:
+   - ACTUAL: db_table = 'config_familias'
+   - DEBE SER: db_table = 'config_articulos_familia'
+
+5. SubFamilia:
+   - ACTUAL: db_table = 'config_subfamilias'
+   - DEBE SER: db_table = 'config_articulos_subfamilia'
+
+6. CodigoProveedorCompra:
+   - YA ESTÁ CORRECTO: db_table = 'config_codigoproveedorcompra'
+
+==========================================
+NOTAS IMPORTANTES
+==========================================
+
+- Los nombres de las tablas NO siguen un patrón uniforme
+- Algunas tablas tienen sufijo "_maestro" (articulos, proveedores, clientes, documentos)
+- Algunas tablas tienen prefijo "config_articulos_" (familia, subfamilia, tipoarticulo)
+- La tabla de depósitos NO tiene prefijo "config_", es "deposito_deposito"
+- Moneda es SINGULAR (config_moneda), no plural
