@@ -61,6 +61,11 @@ INSTALLED_APPS = [
 
     'compras.compras_ingreso',
     'compras.compras_devoluciones',
+    
+    # Apps Le Stage
+    'mineria_le_stage',
+    'industria_le_stage',
+    'gerencia_le_stage',
 
 ]
 
@@ -159,6 +164,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Configuración de autenticación
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
