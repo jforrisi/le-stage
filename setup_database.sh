@@ -41,6 +41,10 @@ echo "🔄 Creando tablas desde cero..."
 python manage.py migrate
 
 echo ""
+echo "📊 Cargando datos iniciales (IVA, Monedas, Documentos)..."
+python cargar_datos_iniciales.py
+
+echo ""
 echo "👥 Creando usuarios..."
 python crear_usuarios.py
 
