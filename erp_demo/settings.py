@@ -43,6 +43,9 @@ else:
 
 # Configuración de seguridad para producción
 if IS_PRODUCTION and not DEBUG:
+    # Agregar WhiteNoise solo en producción
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    
     # Railway maneja HTTPS automáticamente en su proxy, NO activar SECURE_SSL_REDIRECT
     # porque causaría un bucle de redirecciones infinitas
     # SECURE_SSL_REDIRECT = True  # DESACTIVADO: Railway maneja HTTPS
@@ -92,7 +95,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Debe ir después de SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
