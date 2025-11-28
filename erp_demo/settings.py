@@ -66,10 +66,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Apps de configuración
+    # Apps de configuración (orden importante para migraciones)
     'configuracion.clientes',
     'configuracion.clientes.canal_comercial',
-    'configuracion.proveedores',
+    'configuracion.proveedores',  # Debe estar antes de compras_ingreso
     'configuracion.articulos',
     'configuracion.disponibilidades',
     'configuracion.documentos',
@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'configuracion.deposito',
     'configuracion.tablas',
 
+    # Apps de compras (dependen de proveedores, articulos, documentos)
     'compras.compras_ingreso',
     'compras.compras_devoluciones',
     
