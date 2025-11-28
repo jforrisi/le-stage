@@ -365,26 +365,47 @@ body {
     letter-spacing: -0.025em;
 }
 
-/* Logout Button */
-.btn-logout {
-    display: inline-flex;
+/* User Info */
+.user-info {
+    display: flex;
     align-items: center;
-    padding: 10px 20px;
-    background: #ef4444;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+    gap: 0.75rem;
 }
 
-.btn-logout:hover {
-    background: #dc2626;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
-    color: white;
+.user-label {
+    font-size: 0.875rem;
+    color: #111827;
+    font-weight: 500;
+}
+
+/* Logout Button - Estilo similar a btn-primary pero con fondo gris claro */
+.user-info .btn-logout-gray,
+a.btn.btn-logout-gray,
+.btn.btn-logout-gray {
+    background-color: #e5e7eb !important;
+    color: #dc2626 !important;
+    border: 1px solid #d1d5db !important;
+    font-weight: 700 !important;
+    padding: 0.5rem 1rem !important;
+    text-decoration: none !important;
+    border-radius: 0.375rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 0.875rem !important;
+    transition: all 0.15s ease !important;
+    min-width: auto !important;
+    width: auto !important;
+}
+
+.user-info .btn-logout-gray:hover,
+a.btn.btn-logout-gray:hover,
+.btn.btn-logout-gray:hover {
+    background-color: #d1d5db !important;
+    border-color: #9ca3af !important;
+    color: #b91c1c !important;
+    text-decoration: none !important;
 }
 
 .container {

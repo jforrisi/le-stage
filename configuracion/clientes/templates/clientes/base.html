@@ -135,9 +135,12 @@
                 <div class="top-navbar-content">
                     <h1 class="top-navbar-title">{% block page_title %}Sistema de Gestión{% endblock %}</h1>
                     {% if user.is_authenticated %}
-                    <a href="{% url 'logout' %}" class="btn-logout">
-                        <span>Cerrar Sesión</span>
-                    </a>
+                    <div class="user-info">
+                        <span class="user-label">USUARIO: {{ user.get_full_name|default:user.username|upper }} -</span>
+                        <a href="{% url 'logout' %}" class="btn btn-logout-gray" style="background-color: #e5e7eb; color: #dc2626; border: 1px solid #d1d5db; font-weight: 700; padding: 0.5rem 1rem; text-decoration: none; border-radius: 0.375rem; display: inline-flex; align-items: center;">
+                            CERRAR SESIÓN
+                        </a>
+                    </div>
                     {% endif %}
                 </div>
             </header>

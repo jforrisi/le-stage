@@ -14,11 +14,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Lee de variable de entorno, si no existe usa una por defecto (solo para desarrollo)
+# IMPORTANTE: En producción (Railway), configurar SECRET_KEY como variable de entorno
+# con una clave larga y aleatoria (mínimo 50 caracteres, usar: python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())")
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-demo-key-change-in-production-12345')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # En Railway automáticamente DEBUG=False, localmente DEBUG=True
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+# Detectar si estamos en producción (Railway o cualquier entorno con DATABASE_URL)
+IS_PRODUCTION = bool(os.environ.get('DATABASE_URL')) or os.environ.get('RAILWAY_ENVIRONMENT') == 'production'
 
 # ALLOWED_HOSTS: Lee de variable de entorno o usa valores por defecto
 ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS', '')
@@ -35,6 +40,19 @@ if CSRF_TRUSTED_ORIGINS_ENV:
 else:
     # Localmente
     CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
+
+# Configuración de seguridad para producción
+if IS_PRODUCTION and not DEBUG:
+    # Solo aplicar estas configuraciones en producción
+    SECURE_SSL_REDIRECT = True  # W008: Redirige HTTP a HTTPS
+    SESSION_COOKIE_SECURE = True  # W012: Cookies de sesión solo por HTTPS
+    CSRF_COOKIE_SECURE = True  # W016: Cookies CSRF solo por HTTPS
+    SECURE_HSTS_SECONDS = 31536000  # W004: HSTS por 1 año (ajustar según necesidad)
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
 
 
 # Application definition

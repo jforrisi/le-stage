@@ -46,6 +46,8 @@ def crear_usuarios():
         for user_config in usuarios_config:
             username = user_config['username']
             password = user_config.pop('password')
+            # Remover username de user_config para evitar duplicado
+            user_config.pop('username', None)
             
             # Obtener o crear usuario
             try:

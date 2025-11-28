@@ -15,6 +15,25 @@ def menu_context(request):
     """Context processor para generar el menú lateral desde el Excel"""
     menu_data = []
     
+    # Determinar qué secciones puede ver el usuario
+    user = getattr(request, 'user', None)
+    usuario_username = user.username if user and user.is_authenticated else None
+    
+    # Definir permisos por usuario
+    secciones_permitidas = []
+    if usuario_username == 'gerencia' or (user and user.is_superuser):
+        # Gerencia ve todo
+        secciones_permitidas = None  # None significa todas las secciones
+    elif usuario_username == 'mineria':
+        # Mineria solo ve Minería Le Stage
+        secciones_permitidas = ['Minería Le Stage']
+    elif usuario_username == 'industria':
+        # Industria solo ve Industria Le Stage
+        secciones_permitidas = ['Industria Le Stage']
+    else:
+        # Usuario no autenticado o sin permisos específicos - no ve nada
+        secciones_permitidas = []
+    
     try:
         # Ruta al archivo Excel
         excel_path = Path(__file__).parent.parent / 'config.xlsx'
@@ -160,6 +179,16 @@ def menu_context(request):
                 }
             ]
             
+            # Filtrar menú según permisos del usuario
+            # Si secciones_permitidas es None, mostrar todo (gerencia)
+            # Si es una lista, filtrar solo esas secciones
+            if secciones_permitidas is not None and len(secciones_permitidas) > 0:
+                menu_structure = {
+                    nivel1: hijos 
+                    for nivel1, hijos in menu_structure.items() 
+                    if nivel1 in secciones_permitidas
+                }
+            
             # Convertir a lista para el template
             menu_data = [
                 {
@@ -169,8 +198,8 @@ def menu_context(request):
                 for nivel1, hijos in menu_structure.items()
             ]
     except Exception as e:
-        # Si hay error, usar menú por defecto
-        menu_data = [
+        # Si hay error, usar menú por defecto (filtrar según usuario)
+        menu_default = [
             {
                 'nombre': 'Configuración',
                 'hijos': [
@@ -231,6 +260,19 @@ def menu_context(request):
                 ]
             }
         ]
+        
+        # Filtrar menú por defecto según permisos del usuario
+        if secciones_permitidas is not None:
+            if len(secciones_permitidas) > 0:
+                menu_data = [
+                    seccion for seccion in menu_default 
+                    if seccion['nombre'] in secciones_permitidas
+                ]
+            else:
+                menu_data = []
+        else:
+            # Gerencia ve todo
+            menu_data = menu_default
     
     return {
         'menu_lateral': menu_data,
