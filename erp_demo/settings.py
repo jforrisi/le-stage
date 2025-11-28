@@ -43,13 +43,15 @@ else:
 
 # Configuración de seguridad para producción
 if IS_PRODUCTION and not DEBUG:
-    # Solo aplicar estas configuraciones en producción
-    SECURE_SSL_REDIRECT = True  # W008: Redirige HTTP a HTTPS
+    # Railway maneja HTTPS automáticamente en su proxy, NO activar SECURE_SSL_REDIRECT
+    # porque causaría un bucle de redirecciones infinitas
+    # SECURE_SSL_REDIRECT = True  # DESACTIVADO: Railway maneja HTTPS
     SESSION_COOKIE_SECURE = True  # W012: Cookies de sesión solo por HTTPS
     CSRF_COOKIE_SECURE = True  # W016: Cookies CSRF solo por HTTPS
-    SECURE_HSTS_SECONDS = 31536000  # W004: HSTS por 1 año (ajustar según necesidad)
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    # HSTS también puede causar problemas si Railway ya lo maneja
+    # SECURE_HSTS_SECONDS = 31536000  # DESACTIVADO temporalmente
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # SECURE_HSTS_PRELOAD = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
