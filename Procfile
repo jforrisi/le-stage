@@ -1,2 +1,2 @@
-web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn erp_demo.wsgi:application
+web: chmod +x migrate.sh && ./migrate.sh
 
