@@ -1,2 +1,2 @@
-web: chmod +x migrate.sh && ./migrate.sh
+web: chmod +x setup_database.sh && ./setup_database.sh
 

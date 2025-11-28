@@ -15,7 +15,10 @@ python manage.py migrate admin
 # Apps de configuración base
 python manage.py migrate tablas
 python manage.py migrate articulos
-python manage.py migrate proveedores  # IMPORTANTE: debe ejecutarse antes de compras
+
+# IMPORTANTE: proveedores debe ejecutarse antes de compras
+# Usamos --fake-initial para forzar la creación si la tabla no existe
+python manage.py migrate proveedores --fake-initial || python manage.py migrate proveedores
 python manage.py migrate clientes
 python manage.py migrate canal_comercial
 python manage.py migrate documentos
