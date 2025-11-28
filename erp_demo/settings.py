@@ -41,23 +41,7 @@ else:
     # Localmente
     CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
-# Configuración de seguridad para producción
-if IS_PRODUCTION and not DEBUG:
-    # Agregar WhiteNoise solo en producción
-    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-    
-    # Railway maneja HTTPS automáticamente en su proxy, NO activar SECURE_SSL_REDIRECT
-    # porque causaría un bucle de redirecciones infinitas
-    # SECURE_SSL_REDIRECT = True  # DESACTIVADO: Railway maneja HTTPS
-    SESSION_COOKIE_SECURE = True  # W012: Cookies de sesión solo por HTTPS
-    CSRF_COOKIE_SECURE = True  # W016: Cookies CSRF solo por HTTPS
-    # HSTS también puede causar problemas si Railway ya lo maneja
-    # SECURE_HSTS_SECONDS = 31536000  # DESACTIVADO temporalmente
-    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    # SECURE_HSTS_PRELOAD = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
+# Configuración de seguridad para producción (se aplicará después de definir MIDDLEWARE)
 
 
 # Application definition
@@ -102,6 +86,24 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Configuración de seguridad para producción
+if IS_PRODUCTION and not DEBUG:
+    # Agregar WhiteNoise solo en producción (después de SecurityMiddleware)
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    
+    # Railway maneja HTTPS automáticamente en su proxy, NO activar SECURE_SSL_REDIRECT
+    # porque causaría un bucle de redirecciones infinitas
+    # SECURE_SSL_REDIRECT = True  # DESACTIVADO: Railway maneja HTTPS
+    SESSION_COOKIE_SECURE = True  # W012: Cookies de sesión solo por HTTPS
+    CSRF_COOKIE_SECURE = True  # W016: Cookies CSRF solo por HTTPS
+    # HSTS también puede causar problemas si Railway ya lo maneja
+    # SECURE_HSTS_SECONDS = 31536000  # DESACTIVADO temporalmente
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
 
 ROOT_URLCONF = 'erp_demo.urls'
 
