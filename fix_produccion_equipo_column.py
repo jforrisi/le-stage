@@ -35,21 +35,41 @@ def corregir_columna_id_equipo():
             
             # SQLite no soporta ALTER TABLE RENAME COLUMN directamente en versiones antiguas
             # Necesitamos recrear la tabla
-            cursor.execute("""
-                CREATE TABLE mineria_produccion_equipos_new (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    mes_año DATE NOT NULL,
-                    id_equipo INTEGER NOT NULL,
-                    piedra_cantera_id INTEGER NOT NULL,
-                    puntos DECIMAL(15,2) NOT NULL,
-                    valuacion DECIMAL(15,2) NOT NULL DEFAULT 0,
-                    kilos DECIMAL(15,2) NOT NULL DEFAULT 0,
-                    puntos_calculados DECIMAL(15,2) NOT NULL DEFAULT 0,
-                    FOREIGN KEY (id_equipo) REFERENCES mineria_equipos(id_equipo),
-                    FOREIGN KEY (piedra_cantera_id) REFERENCES mineria_piedras_canteras(id),
-                    UNIQUE(mes_año, id_equipo, piedra_cantera_id)
-                )
-            """)
+            # Detectar el tipo de base de datos
+            db_engine = connection.vendor
+            if db_engine == 'postgresql':
+                cursor.execute("""
+                    CREATE TABLE mineria_produccion_equipos_new (
+                        id BIGSERIAL PRIMARY KEY,
+                        mes_año DATE NOT NULL,
+                        id_equipo INTEGER NOT NULL,
+                        piedra_cantera_id INTEGER NOT NULL,
+                        puntos DECIMAL(15,2) NOT NULL,
+                        valuacion DECIMAL(15,2) NOT NULL DEFAULT 0,
+                        kilos DECIMAL(15,2) NOT NULL DEFAULT 0,
+                        puntos_calculados DECIMAL(15,2) NOT NULL DEFAULT 0,
+                        FOREIGN KEY (id_equipo) REFERENCES mineria_equipos(id_equipo),
+                        FOREIGN KEY (piedra_cantera_id) REFERENCES mineria_piedras_canteras(id),
+                        UNIQUE(mes_año, id_equipo, piedra_cantera_id)
+                    )
+                """)
+            else:
+                # SQLite
+                cursor.execute("""
+                    CREATE TABLE mineria_produccion_equipos_new (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        mes_año DATE NOT NULL,
+                        id_equipo INTEGER NOT NULL,
+                        piedra_cantera_id INTEGER NOT NULL,
+                        puntos DECIMAL(15,2) NOT NULL,
+                        valuacion DECIMAL(15,2) NOT NULL DEFAULT 0,
+                        kilos DECIMAL(15,2) NOT NULL DEFAULT 0,
+                        puntos_calculados DECIMAL(15,2) NOT NULL DEFAULT 0,
+                        FOREIGN KEY (id_equipo) REFERENCES mineria_equipos(id_equipo),
+                        FOREIGN KEY (piedra_cantera_id) REFERENCES mineria_piedras_canteras(id),
+                        UNIQUE(mes_año, id_equipo, piedra_cantera_id)
+                    )
+                """)
             
             # Copiar datos
             cursor.execute("""

@@ -12,23 +12,29 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             sql="""
-            -- Recrear la tabla con la foreign key correcta
-            CREATE TABLE IF NOT EXISTS config_codigoproveedorcompra_new (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                codigo_proveedor VARCHAR(100) NOT NULL,
-                articulo_id BIGINT NOT NULL REFERENCES config_articulos_maestro(id) ON DELETE CASCADE,
-                proveedor_id BIGINT NOT NULL REFERENCES config_proveedores_maestro(id) ON DELETE CASCADE,
-                UNIQUE(articulo_id, proveedor_id)
-            );
-            
-            -- Copiar datos si la tabla original existe
-            INSERT INTO config_codigoproveedorcompra_new 
-            SELECT id, codigo_proveedor, articulo_id, proveedor_id 
-            FROM config_codigoproveedorcompra;
-            
-            -- Reemplazar la tabla
-            DROP TABLE IF EXISTS config_codigoproveedorcompra;
-            ALTER TABLE config_codigoproveedorcompra_new RENAME TO config_codigoproveedorcompra;
+            -- Recrear la tabla con la foreign key correcta (PostgreSQL compatible)
+            DO $$
+            BEGIN
+                -- Crear nueva tabla
+                CREATE TABLE IF NOT EXISTS config_codigoproveedorcompra_new (
+                    id BIGSERIAL PRIMARY KEY,
+                    codigo_proveedor VARCHAR(100) NOT NULL,
+                    articulo_id BIGINT NOT NULL REFERENCES config_articulos_maestro(id) ON DELETE CASCADE,
+                    proveedor_id BIGINT NOT NULL REFERENCES config_proveedores_maestro(id) ON DELETE CASCADE,
+                    UNIQUE(articulo_id, proveedor_id)
+                );
+                
+                -- Copiar datos si la tabla original existe
+                IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'config_codigoproveedorcompra') THEN
+                    INSERT INTO config_codigoproveedorcompra_new (id, codigo_proveedor, articulo_id, proveedor_id)
+                    SELECT id, codigo_proveedor, articulo_id, proveedor_id 
+                    FROM config_codigoproveedorcompra;
+                END IF;
+                
+                -- Reemplazar la tabla
+                DROP TABLE IF EXISTS config_codigoproveedorcompra;
+                ALTER TABLE config_codigoproveedorcompra_new RENAME TO config_codigoproveedorcompra;
+            END $$;
             """,
             reverse_sql=migrations.RunSQL.noop
         ),
