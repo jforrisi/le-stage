@@ -65,8 +65,8 @@ def cargar_datos_iniciales():
                 df_moneda = pd.read_excel(excel_path, sheet_name='config_monedas')
                 print(f"   Encontradas {len(df_moneda)} filas en config_monedas")
             except:
-            df_moneda = pd.read_excel(excel_path, sheet_name='config_moneda')
-            print(f"   Encontradas {len(df_moneda)} filas en config_moneda")
+                df_moneda = pd.read_excel(excel_path, sheet_name='config_moneda')
+                print(f"   Encontradas {len(df_moneda)} filas en config_moneda")
             
             for _, row in df_moneda.iterrows():
                 moneda_data = {
