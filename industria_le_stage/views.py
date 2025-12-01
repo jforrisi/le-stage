@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from .models import TipoPulidoPiezas
+from .forms import TipoPulidoPiezasForm, PiezasCorteCanteraFormIndustria
 from mineria_le_stage.models import PiezasCorteCantera
 from erp_demo.config import EMPRESA_NOMBRE
 
