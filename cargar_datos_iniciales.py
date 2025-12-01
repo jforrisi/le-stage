@@ -60,6 +60,11 @@ def cargar_datos_iniciales():
         # 2. Cargar Monedas desde Excel
         print("\n💰 Cargando Monedas desde Excel...")
         try:
+            # Intentar primero con config_monedas (con 's'), luego con config_moneda (sin 's')
+            try:
+                df_moneda = pd.read_excel(excel_path, sheet_name='config_monedas')
+                print(f"   Encontradas {len(df_moneda)} filas en config_monedas")
+            except:
             df_moneda = pd.read_excel(excel_path, sheet_name='config_moneda')
             print(f"   Encontradas {len(df_moneda)} filas en config_moneda")
             

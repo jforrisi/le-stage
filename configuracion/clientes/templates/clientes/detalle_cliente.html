@@ -1,0 +1,133 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Detalle de Cliente - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Detalle del Cliente</h2>
+    <div class="header-actions">
+        <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h3>{{ cliente.nombre_comercial|default:cliente.razon_social }}</h3>
+            {% if cliente.activo == 'SI' %}
+                <span class="badge badge-success">Activo</span>
+            {% else %}
+                <span class="badge badge-danger">Inactivo</span>
+            {% endif %}
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-row">
+                <strong>Código:</strong>
+                <span>{{ cliente.codigo }}</span>
+            </div>
+            
+            {% if cliente.nombre_comercial %}
+            <div class="detail-row">
+                <strong>Nombre Comercial:</strong>
+                <span>{{ cliente.nombre_comercial }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.razon_social %}
+            <div class="detail-row">
+                <strong>Razón Social:</strong>
+                <span>{{ cliente.razon_social }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.rut %}
+            <div class="detail-row">
+                <strong>RUT:</strong>
+                <span>{{ cliente.rut }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.domicilio %}
+            <div class="detail-row">
+                <strong>Domicilio:</strong>
+                <span>{{ cliente.domicilio }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.departamento %}
+            <div class="detail-row">
+                <strong>Departamento:</strong>
+                <span>{{ cliente.get_departamento_display }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.telefono %}
+            <div class="detail-row">
+                <strong>Teléfono:</strong>
+                <span>{{ cliente.telefono }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.celular %}
+            <div class="detail-row">
+                <strong>Celular:</strong>
+                <span>{{ cliente.celular }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.contacto %}
+            <div class="detail-row">
+                <strong>Contacto:</strong>
+                <span>{{ cliente.contacto }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.email %}
+            <div class="detail-row">
+                <strong>Email:</strong>
+                <span>{{ cliente.email }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="detail-row">
+                <strong>Forma de Pago:</strong>
+                <span>{{ cliente.get_forma_pago_display }}</span>
+            </div>
+            
+            {% if cliente.canal_comercial %}
+            <div class="detail-row">
+                <strong>Canal Comercial:</strong>
+                <span>{{ cliente.canal_comercial }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.monotributista %}
+            <div class="detail-row">
+                <strong>Monotributista:</strong>
+                <span>{{ cliente.monotributista }}</span>
+            </div>
+            {% endif %}
+            
+            {% if cliente.observaciones %}
+            <div class="detail-row">
+                <strong>Observaciones:</strong>
+                <span>{{ cliente.observaciones }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="detail-row">
+                <strong>Fecha/Hora:</strong>
+                <span>{{ cliente.fchhor|date:"d/m/Y H:i" }}</span>
+            </div>
+        </div>
+        
+        <div class="detail-actions">
+            <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-warning">Editar Cliente</a>
+            <a href="{% url 'eliminar_cliente' cliente.pk %}" class="btn btn-danger">Eliminar Cliente</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

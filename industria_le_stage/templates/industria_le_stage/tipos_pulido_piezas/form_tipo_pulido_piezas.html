@@ -1,0 +1,44 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'industria_le_stage:lista_tipos_pulido_piezas' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }} <span style="color: red;">*</span></label>
+            {{ form.nombre }}
+            {% if form.nombre.errors %}
+                <div class="error-message">{{ form.nombre.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.observaciones.id_for_label }}">{{ form.observaciones.label }}</label>
+            {{ form.observaciones }}
+            {% if form.observaciones.errors %}
+                <div class="error-message">{{ form.observaciones.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'industria_le_stage:lista_tipos_pulido_piezas' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

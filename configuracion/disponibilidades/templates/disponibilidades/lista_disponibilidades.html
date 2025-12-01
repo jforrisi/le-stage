@@ -1,0 +1,103 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Disponibilidades - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Gestión de Disponibilidades</h2>
+    <a href="{% url 'crear_disponibilidad' %}" class="btn btn-primary">Nueva Disponibilidad</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_disponibilidades' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por código, institución o alias..." class="search-input">
+        <select name="tipo" class="form-control" style="display: inline-block; width: auto; margin-left: 0.5rem;">
+            <option value="">Todos los tipos</option>
+            <option value="BANCO" {% if tipo_filtro == 'BANCO' %}selected{% endif %}>Bancos</option>
+            <option value="IEDE" {% if tipo_filtro == 'IEDE' %}selected{% endif %}>IEDEs</option>
+            <option value="CAJA" {% if tipo_filtro == 'CAJA' %}selected{% endif %}>Cajas</option>
+        </select>
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda or tipo_filtro %}
+            <a href="{% url 'lista_disponibilidades' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if disponibilidades %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Tipo</th>
+                    <th>Institución</th>
+                    <th>Alias</th>
+                    <th>Número</th>
+                    <th>Moneda</th>
+                    <th>Tipo Cuenta</th>
+                    <th>Chequera</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for disp in disponibilidades %}
+                <tr>
+                    <td><strong>{{ disp.codigo|default:"-" }}</strong></td>
+                    <td>
+                        {% if disp.tipo == 'BANCO' %}
+                            <span class="badge badge-info">Banco</span>
+                        {% elif disp.tipo == 'IEDE' %}
+                            <span class="badge badge-warning">IEDE</span>
+                        {% elif disp.tipo == 'CAJA' %}
+                            <span class="badge badge-success">Caja</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ disp.nombre_institucion }}</td>
+                    <td>{{ disp.alias|default:"-" }}</td>
+                    <td>{{ disp.numero|default:"-" }}</td>
+                    <td>{{ disp.moneda.nombre }}</td>
+                    <td>
+                        {% if disp.tipo_cuenta == 'CC' %}
+                            Cuenta Corriente
+                        {% elif disp.tipo_cuenta == 'CA' %}
+                            Caja de Ahorro
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if disp.chequera == 'SI' %}
+                            <span class="badge badge-success">Sí</span>
+                        {% elif disp.chequera == 'NO' %}
+                            <span class="badge badge-secondary">No</span>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if disp.activo == 'SI' %}
+                            <span class="badge badge-success">Sí</span>
+                        {% else %}
+                            <span class="badge badge-danger">No</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'detalle_disponibilidad' disp.pk %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'editar_disponibilidad' disp.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'eliminar_disponibilidad' disp.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron disponibilidades.</p>
+            <a href="{% url 'crear_disponibilidad' %}" class="btn btn-primary">Crear Primera Disponibilidad</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

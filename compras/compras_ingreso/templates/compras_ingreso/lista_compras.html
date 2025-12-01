@@ -1,0 +1,89 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Compras - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'compras_ingreso:crear_compra' %}" class="btn btn-primary">Nueva Compra</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por transacción, número, proveedor..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'compras_ingreso:lista_compras' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if compras %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Transacción</th>
+                    <th>Número</th>
+                    <th>Proveedor</th>
+                    <th>Fecha Documento</th>
+                    <th>Forma Pago</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for compra in compras %}
+                <tr>
+                    <td><strong>{{ compra.transaccion }}</strong></td>
+                    <td>{{ compra.numero_documento }}</td>
+                    <td>{{ compra.id_proveedor.razon|default:compra.id_proveedor.nombre_comercial }}</td>
+                    <td>{{ compra.fecha_documento|date:"d/m/Y" }}</td>
+                    <td>
+                        <span class="badge badge-{% if compra.forma_pago == 'CONTADO' %}success{% else %}info{% endif %}">
+                            {{ compra.get_forma_pago_display }}
+                        </span>
+                    </td>
+                    <td><strong>{{ compra.moneda.codigo }} {{ compra.importe_total|floatformat:2 }}</strong></td>
+                    <td class="actions">
+                        <a href="{% url 'compras_ingreso:detalle_compra' compra.transaccion %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'compras_ingreso:editar_compra' compra.transaccion %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'compras_ingreso:eliminar_compra' compra.transaccion %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if compras.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if compras.has_previous %}
+                <a href="?page={{ compras.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ compras.number }} de {{ compras.paginator.num_pages }}
+                {% if compras.paginator.count %}
+                    ({{ compras.paginator.count }} registro{{ compras.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if compras.has_next %}
+                <a href="?page={{ compras.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron compras.</p>
+            <a href="{% url 'compras_ingreso:crear_compra' %}" class="btn btn-primary">Crear Primera Compra</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,90 @@
+{% extends 'clientes/base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:lista_puntos_piedras_equipo' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form" id="puntos-form">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.id_equipo.id_for_label }}">{{ form.id_equipo.label }}</label>
+            {{ form.id_equipo }}
+            {% if form.id_equipo.errors %}
+                <div class="error-message">{{ form.id_equipo.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.piedra_cantera.id_for_label }}">{{ form.piedra_cantera.label }}</label>
+            {{ form.piedra_cantera }}
+            {% if form.piedra_cantera.errors %}
+                <div class="error-message">{{ form.piedra_cantera.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.mes_año.id_for_label }}">{{ form.mes_año.label }}</label>
+            {{ form.mes_año }}
+            {% if form.mes_año.errors %}
+                <div class="error-message">{{ form.mes_año.errors }}</div>
+            {% endif %}
+            <small class="form-text">Ingrese el primer día del mes (ej: 2025-11-01 para noviembre 2025)</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.puntos.id_for_label }}">{{ form.puntos.label }}</label>
+            {{ form.puntos }}
+            {% if form.puntos.errors %}
+                <div class="error-message">{{ form.puntos.errors }}</div>
+            {% endif %}
+            <small class="form-text">Se sugiere el valor de la tabla maestra, pero puede modificarlo</small>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'mineria_le_stage:lista_puntos_piedras_equipo' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const piedraSelect = document.getElementById('id_piedra_cantera');
+    const puntosInput = document.getElementById('id_puntos');
+    
+    if (piedraSelect && puntosInput) {
+        piedraSelect.addEventListener('change', function() {
+            const piedraId = this.value;
+            
+            if (piedraId && !puntosInput.value) {
+                // Obtener puntos sugeridos
+                fetch(`{% url 'mineria_le_stage:obtener_puntos_sugeridos' %}?piedra_id=${piedraId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.puntos) {
+                            puntosInput.value = data.puntos;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+

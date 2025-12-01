@@ -1,0 +1,206 @@
+{% extends 'clientes/base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'lista_disponibilidades' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form" id="formDisponibilidad">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.codigo.id_for_label }}">{{ form.codigo.label }}</label>
+            {{ form.codigo }}
+            <small class="form-text">Se generará automáticamente según el tipo (BCO000001, IEDE000001, CAJA000001)</small>
+            {% if form.codigo.errors %}<div class="error-message">{{ form.codigo.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.tipo.id_for_label }}">{{ form.tipo.label }} *</label>
+            {{ form.tipo }}
+            {% if form.tipo.errors %}<div class="error-message">{{ form.tipo.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Campos para BANCO -->
+        <div id="banco-fields" style="display: none;">
+            <div class="form-group">
+                <label for="{{ form.nombre_institucion_banco.id_for_label }}">{{ form.nombre_institucion_banco.label }} *</label>
+                {{ form.nombre_institucion_banco }}
+                {% if form.nombre_institucion_banco.errors %}<div class="error-message">{{ form.nombre_institucion_banco.errors }}</div>{% endif %}
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.tipo_cuenta.id_for_label }}">{{ form.tipo_cuenta.label }} *</label>
+                    {{ form.tipo_cuenta }}
+                    {% if form.tipo_cuenta.errors %}<div class="error-message">{{ form.tipo_cuenta.errors }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.chequera.id_for_label }}">{{ form.chequera.label }} *</label>
+                    {{ form.chequera }}
+                    {% if form.chequera.errors %}<div class="error-message">{{ form.chequera.errors }}</div>{% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.numero.id_for_label }}">{{ form.numero.label }} *</label>
+                {{ form.numero }}
+                <small class="form-text">Número de cuenta por el cual se pueden hacer transferencias desde otros bancos a este</small>
+                {% if form.numero.errors %}<div class="error-message">{{ form.numero.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <!-- Campos para IEDE -->
+        <div id="iede-fields" style="display: none;">
+            <div class="form-group">
+                <label for="{{ form.nombre_institucion_iede.id_for_label }}">{{ form.nombre_institucion_iede.label }} *</label>
+                {{ form.nombre_institucion_iede }}
+                {% if form.nombre_institucion_iede.errors %}<div class="error-message">{{ form.nombre_institucion_iede.errors }}</div>{% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.numero.id_for_label }}">{{ form.numero.label }}</label>
+                {{ form.numero }}
+                <small class="form-text">Número opcional de la IEDE</small>
+                {% if form.numero.errors %}<div class="error-message">{{ form.numero.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <!-- Campos para CAJA -->
+        <div id="caja-fields" style="display: none;">
+            <div class="form-group">
+                <label>Nombre Institución</label>
+                <input type="text" class="form-control" value="Caja" readonly>
+                <small class="form-text">Se establecerá automáticamente como "Caja"</small>
+            </div>
+        </div>
+
+        <!-- Campo oculto para nombre_institucion (se llena automáticamente) -->
+        {{ form.nombre_institucion }}
+
+        <div class="form-group">
+            <label for="{{ form.alias.id_for_label }}">{{ form.alias.label }}</label>
+            {{ form.alias }}
+            <small class="form-text">Alias opcional para identificar la disponibilidad</small>
+            {% if form.alias.errors %}<div class="error-message">{{ form.alias.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.fecha_ingreso_sistema.id_for_label }}">{{ form.fecha_ingreso_sistema.label }} *</label>
+                {{ form.fecha_ingreso_sistema }}
+                {% if form.fecha_ingreso_sistema.errors %}<div class="error-message">{{ form.fecha_ingreso_sistema.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.saldo_inicial.id_for_label }}">{{ form.saldo_inicial.label }} *</label>
+                {{ form.saldo_inicial }}
+                {% if form.saldo_inicial.errors %}<div class="error-message">{{ form.saldo_inicial.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.moneda.id_for_label }}">{{ form.moneda.label }} *</label>
+            {{ form.moneda }}
+            {% if form.moneda.errors %}<div class="error-message">{{ form.moneda.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.activo.id_for_label }}">{{ form.activo.label }}</label>
+            {{ form.activo }}
+            {% if form.activo.errors %}<div class="error-message">{{ form.activo.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.observaciones.id_for_label }}">{{ form.observaciones.label }}</label>
+            {{ form.observaciones }}
+            {% if form.observaciones.errors %}<div class="error-message">{{ form.observaciones.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'lista_disponibilidades' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tipoSelect = document.getElementById('id_tipo');
+    const bancoFields = document.getElementById('banco-fields');
+    const iedeFields = document.getElementById('iede-fields');
+    const cajaFields = document.getElementById('caja-fields');
+    const nombreInstitucionInput = document.getElementById('id_nombre_institucion');
+    const nombreInstitucionBanco = document.getElementById('id_nombre_institucion_banco');
+    const nombreInstitucionIede = document.getElementById('id_nombre_institucion_iede');
+    const tipoCuentaSelect = document.getElementById('id_tipo_cuenta');
+    const chequeraSelect = document.getElementById('id_chequera');
+    const numeroInput = document.getElementById('id_numero');
+
+    function toggleFields() {
+        const tipo = tipoSelect.value;
+        
+        // Ocultar todos los campos
+        bancoFields.style.display = 'none';
+        iedeFields.style.display = 'none';
+        cajaFields.style.display = 'none';
+        
+        // Resetear campos
+        nombreInstitucionBanco.value = '';
+        nombreInstitucionIede.value = '';
+        nombreInstitucionInput.value = '';
+        
+        if (tipo === 'BANCO') {
+            bancoFields.style.display = 'block';
+            // Establecer valores por defecto para banco
+            tipoCuentaSelect.innerHTML = '<option value="">---------</option><option value="CC">Cuenta Corriente</option><option value="CA">Caja de Ahorro</option>';
+            chequeraSelect.innerHTML = '<option value="">---------</option><option value="SI">Sí</option><option value="NO">No</option>';
+            numeroInput.required = true;
+        } else if (tipo === 'IEDE') {
+            iedeFields.style.display = 'block';
+            // Establecer valores por defecto para IEDE
+            tipoCuentaSelect.value = 'NA';
+            chequeraSelect.value = 'NA';
+            numeroInput.required = false;
+        } else if (tipo === 'CAJA') {
+            cajaFields.style.display = 'block';
+            nombreInstitucionInput.value = 'Caja';
+            // Establecer valores por defecto para CAJA
+            tipoCuentaSelect.value = 'NA';
+            chequeraSelect.value = 'NA';
+            numeroInput.required = false;
+        }
+    }
+
+    // Actualizar nombre_institucion cuando se selecciona banco o IEDE
+    if (nombreInstitucionBanco) {
+        nombreInstitucionBanco.addEventListener('change', function() {
+            if (tipoSelect.value === 'BANCO') {
+                const selectedOption = nombreInstitucionBanco.options[nombreInstitucionBanco.selectedIndex];
+                nombreInstitucionInput.value = selectedOption.text;
+            }
+        });
+    }
+
+    if (nombreInstitucionIede) {
+        nombreInstitucionIede.addEventListener('change', function() {
+            if (tipoSelect.value === 'IEDE') {
+                const selectedOption = nombreInstitucionIede.options[nombreInstitucionIede.selectedIndex];
+                nombreInstitucionInput.value = selectedOption.text;
+            }
+        });
+    }
+
+    // Inicializar campos al cargar
+    if (tipoSelect) {
+        tipoSelect.addEventListener('change', toggleFields);
+        toggleFields();
+    }
+});
+</script>
+{% endblock %}
+

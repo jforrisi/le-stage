@@ -1,0 +1,127 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Detalle de Disponibilidad - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Detalle de la Disponibilidad</h2>
+    <div class="header-actions">
+        <a href="{% url 'editar_disponibilidad' disponibilidad.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'lista_disponibilidades' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h3>{{ disponibilidad.nombre_institucion }}</h3>
+            <span class="badge badge-info">{{ disponibilidad.codigo }}</span>
+            {% if disponibilidad.alias %}
+                <span class="badge badge-secondary">{{ disponibilidad.alias }}</span>
+            {% endif %}
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-row">
+                <strong>Tipo:</strong>
+                <span>
+                    {% if disponibilidad.tipo == 'BANCO' %}
+                        <span class="badge badge-info">Banco</span>
+                    {% elif disponibilidad.tipo == 'IEDE' %}
+                        <span class="badge badge-warning">Institución Emisora de Dinero Electrónico</span>
+                    {% elif disponibilidad.tipo == 'CAJA' %}
+                        <span class="badge badge-success">Caja</span>
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="detail-row">
+                <strong>Institución:</strong>
+                <span>{{ disponibilidad.nombre_institucion }}</span>
+            </div>
+            
+            {% if disponibilidad.alias %}
+            <div class="detail-row">
+                <strong>Alias:</strong>
+                <span>{{ disponibilidad.alias }}</span>
+            </div>
+            {% endif %}
+            
+            {% if disponibilidad.numero %}
+            <div class="detail-row">
+                <strong>Número:</strong>
+                <span>{{ disponibilidad.numero }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="detail-row">
+                <strong>Fecha de Ingreso al Sistema:</strong>
+                <span>{{ disponibilidad.fecha_ingreso_sistema|date:"d/m/Y" }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <strong>Saldo Inicial en Moneda Original:</strong>
+                <span>{{ disponibilidad.saldo_inicial|default:"0.00" }} {{ disponibilidad.moneda.codigo }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <strong>Moneda:</strong>
+                <span>{{ disponibilidad.moneda.nombre }} ({{ disponibilidad.moneda.codigo }})</span>
+            </div>
+            
+            {% if disponibilidad.tipo == 'BANCO' %}
+            <div class="detail-row">
+                <strong>Tipo de Cuenta:</strong>
+                <span>
+                    {% if disponibilidad.tipo_cuenta == 'CC' %}
+                        Cuenta Corriente
+                    {% elif disponibilidad.tipo_cuenta == 'CA' %}
+                        Caja de Ahorro
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="detail-row">
+                <strong>Chequera:</strong>
+                <span>
+                    {% if disponibilidad.chequera == 'SI' %}
+                        <span class="badge badge-success">Sí</span>
+                    {% elif disponibilidad.chequera == 'NO' %}
+                        <span class="badge badge-secondary">No</span>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+            
+            <div class="detail-row">
+                <strong>Fecha de Creación:</strong>
+                <span>{{ disponibilidad.fecha_creacion|date:"d/m/Y" }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <strong>Activo:</strong>
+                <span>
+                    {% if disponibilidad.activo == 'SI' %}
+                        <span class="badge badge-success">Sí</span>
+                    {% else %}
+                        <span class="badge badge-danger">No</span>
+                    {% endif %}
+                </span>
+            </div>
+            
+            {% if disponibilidad.observaciones %}
+            <div class="detail-row">
+                <strong>Observaciones:</strong>
+                <span>{{ disponibilidad.observaciones }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="detail-actions">
+            <a href="{% url 'editar_disponibilidad' disponibilidad.pk %}" class="btn btn-warning">Editar Disponibilidad</a>
+            <a href="{% url 'eliminar_disponibilidad' disponibilidad.pk %}" class="btn btn-danger">Eliminar Disponibilidad</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

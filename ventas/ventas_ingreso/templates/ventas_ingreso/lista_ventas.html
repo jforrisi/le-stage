@@ -1,0 +1,89 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Ventas - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'ventas_ingreso:crear_venta' %}" class="btn btn-primary">Nueva Venta</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por transacción, número, cliente..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'ventas_ingreso:lista_ventas' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if ventas %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Transacción</th>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Fecha Documento</th>
+                    <th>Forma Pago</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                <tr>
+                    <td><strong>{{ venta.transaccion }}</strong></td>
+                    <td>{{ venta.numero_documento }}</td>
+                    <td>{{ venta.id_cliente.razon|default:venta.id_cliente.nombre_comercial }}</td>
+                    <td>{{ venta.fecha_documento|date:"d/m/Y" }}</td>
+                    <td>
+                        <span class="badge badge-{% if venta.forma_pago == 'CONTADO' %}success{% else %}info{% endif %}">
+                            {{ venta.get_forma_pago_display }}
+                        </span>
+                    </td>
+                    <td><strong>{{ venta.moneda.codigo }} {{ venta.importe_total|floatformat:2 }}</strong></td>
+                    <td class="actions">
+                        <a href="{% url 'ventas_ingreso:detalle_venta' venta.transaccion %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'ventas_ingreso:editar_venta' venta.transaccion %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'ventas_ingreso:eliminar_venta' venta.transaccion %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if ventas.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if ventas.has_previous %}
+                <a href="?page={{ ventas.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ ventas.number }} de {{ ventas.paginator.num_pages }}
+                {% if ventas.paginator.count %}
+                    ({{ ventas.paginator.count }} registro{{ ventas.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if ventas.has_next %}
+                <a href="?page={{ ventas.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron ventas.</p>
+            <a href="{% url 'ventas_ingreso:crear_venta' %}" class="btn btn-primary">Crear Primera Venta</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,79 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:crear_equipo' %}" class="btn btn-primary">Nuevo Equipo</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por nombre o responsable..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'mineria_le_stage:lista_equipos' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if equipos %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Equipo</th>
+                    <th>Nombre Equipo</th>
+                    <th>Responsable</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipo in equipos %}
+                <tr>
+                    <td><strong>{{ equipo.id_equipo }}</strong></td>
+                    <td>{{ equipo.nombre_equipo }}</td>
+                    <td>{{ equipo.responsable }}</td>
+                    <td class="actions">
+                        <a href="{% url 'mineria_le_stage:detalle_equipo' equipo.id_equipo %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'mineria_le_stage:editar_equipo' equipo.id_equipo %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'mineria_le_stage:eliminar_equipo' equipo.id_equipo %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if equipos.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if equipos.has_previous %}
+                <a href="?page={{ equipos.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ equipos.number }} de {{ equipos.paginator.num_pages }}
+                {% if equipos.paginator.count %}
+                    ({{ equipos.paginator.count }} registro{{ equipos.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if equipos.has_next %}
+                <a href="?page={{ equipos.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron equipos.</p>
+            <a href="{% url 'mineria_le_stage:crear_equipo' %}" class="btn btn-primary">Crear Primer Equipo</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

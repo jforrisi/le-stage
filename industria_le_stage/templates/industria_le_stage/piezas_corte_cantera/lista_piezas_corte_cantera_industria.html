@@ -1,0 +1,191 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por nombre o número..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'industria_le_stage:lista_piezas_corte_cantera_industria' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if piezas_con_formularios %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Número</th>
+                    <th>Equipo Minero</th>
+                    <th>Equipo Corte</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in piezas_con_formularios %}
+                <tr>
+                    <td><strong>{{ item.pieza.id }}</strong></td>
+                    <td>{{ item.pieza.nombre_piedra|default:"-" }}</td>
+                    <td>{{ item.pieza.numero|default:"-" }}</td>
+                    <td>{{ item.pieza.equipo_minero.nombre_equipo|default:"-" }}</td>
+                    <td>{{ item.pieza.equipo_corte.nombre_equipo|default:"-" }}</td>
+                    <td>
+                        {% if item.tiene_datos_industria %}
+                            <span style="color: green;">✓ Con datos</span>
+                        {% else %}
+                            <span style="color: orange;">Sin datos</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <button type="button" class="btn btn-sm btn-primary" onclick="toggleForm({{ item.pieza.id }})">
+                            {% if item.tiene_datos_industria %}Editar{% else %}Agregar Datos{% endif %}
+                        </button>
+                        <a href="{% url 'industria_le_stage:detalle_pieza_corte_cantera_industria' item.pieza.id %}" class="btn btn-sm btn-info">Ver</a>
+                    </td>
+                </tr>
+                <tr id="form-row-{{ item.pieza.id }}" style="display: none;">
+                    <td colspan="7">
+                        <div style="background: #f5f5f5; padding: 20px; border-radius: 5px; margin: 10px 0;">
+                            <h4 style="margin-bottom: 15px;">Datos de Industria - Pieza {{ item.pieza.id }}</h4>
+                            <form id="form-{{ item.pieza.id }}" class="industria-form" data-pieza-id="{{ item.pieza.id }}">
+                                {% csrf_token %}
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label>{{ item.form.fecha_industria.label }}</label>
+                                        {{ item.form.fecha_industria }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>{{ item.form.kilos_recepcion_industria.label }}</label>
+                                        {{ item.form.kilos_recepcion_industria }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>{{ item.form.tipo_piedra.label }}</label>
+                                        {{ item.form.tipo_piedra }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>{{ item.form.tipo_proceso.label }}</label>
+                                        {{ item.form.tipo_proceso }}
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label>{{ item.form.kilos_despues_tallado.label }}</label>
+                                        {{ item.form.kilos_despues_tallado }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>{{ item.form.precio_por_kilo_tallado.label }}</label>
+                                        {{ item.form.precio_por_kilo_tallado }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>{{ item.form.pulido_por_kilo.label }}</label>
+                                        {{ item.form.pulido_por_kilo }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>{{ item.form.extra_carlos.label }}</label>
+                                        {{ item.form.extra_carlos }}
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="margin-top: 15px;">
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                    <button type="button" class="btn btn-secondary" onclick="toggleForm({{ item.pieza.id }})">Cancelar</button>
+                                </div>
+                                <div id="message-{{ item.pieza.id }}" style="margin-top: 10px;"></div>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if piezas.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if piezas.has_previous %}
+                <a href="?page={{ piezas.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ piezas.number }} de {{ piezas.paginator.num_pages }}
+                {% if piezas.paginator.count %}
+                    ({{ piezas.paginator.count }} registro{{ piezas.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if piezas.has_next %}
+                <a href="?page={{ piezas.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron piezas de corte en cantera.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleForm(piezaId) {
+    const formRow = document.getElementById('form-row-' + piezaId);
+    if (formRow.style.display === 'none') {
+        formRow.style.display = 'table-row';
+    } else {
+        formRow.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('.industria-form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const piezaId = this.dataset.piezaId;
+            const formData = new FormData(this);
+            const messageDiv = document.getElementById('message-' + piezaId);
+            
+            const url = '/piezas-corte-industria/' + piezaId + '/guardar/';
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    messageDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    let errors = '';
+                    for (let field in data.errors) {
+                        errors += data.errors[field].join(', ') + '<br>';
+                    }
+                    messageDiv.innerHTML = '<div class="alert alert-danger">' + errors + '</div>';
+                }
+            })
+            .catch(error => {
+                messageDiv.innerHTML = '<div class="alert alert-danger">Error al guardar: ' + error + '</div>';
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+

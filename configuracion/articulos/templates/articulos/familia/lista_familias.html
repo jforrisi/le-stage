@@ -1,0 +1,52 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Familias - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Gestión de Familias</h2>
+    <a href="{% url 'crear_familia' %}" class="btn btn-primary">Nueva Familia</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_familias' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por código o nombre..." class="search-input">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_familias' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if familias %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for familia in familias %}
+                <tr>
+                    <td><strong>{{ familia.codigo|default:"-" }}</strong></td>
+                    <td>{{ familia.nombre }}</td>
+                    <td class="actions">
+                        <a href="{% url 'editar_familia' familia.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'eliminar_familia' familia.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron familias.</p>
+            <a href="{% url 'crear_familia' %}" class="btn btn-primary">Crear Primera Familia</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

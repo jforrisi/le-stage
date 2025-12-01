@@ -1,0 +1,32 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Familia - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Familia</h2>
+    <a href="{% url 'lista_familias' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="delete-container">
+    <div class="delete-card">
+        <div class="delete-warning">
+            <h3>¿Está seguro que desea eliminar esta familia?</h3>
+            <p>Esta acción no se puede deshacer.</p>
+        </div>
+        
+        <div class="delete-info">
+            <h4>{{ familia.nombre }}</h4>
+        </div>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+                <a href="{% url 'lista_familias' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

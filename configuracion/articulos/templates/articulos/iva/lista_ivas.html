@@ -1,0 +1,39 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}IVAs - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+</div>
+
+<div class="table-container">
+    {% if ivas %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Valor</th>
+                    <th>Activo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for iva in ivas %}
+                <tr>
+                    <td><strong>{{ iva.codigo }}</strong></td>
+                    <td>{{ iva.nombre }}</td>
+                    <td>{{ iva.valor }} ({{ iva.valor|floatformat:0 }}%)</td>
+                    <td>{{ iva.activo }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No hay tasas de IVA registradas.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

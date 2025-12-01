@@ -1,0 +1,62 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Pieza de Corte - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Pieza de Corte</h2>
+    <a href="{% url 'mineria_le_stage:lista_piezas_corte_cantera' %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="alert alert-warning">
+    <h3>¿Está seguro que desea eliminar esta pieza de corte?</h3>
+    <p>Esta acción no se puede deshacer.</p>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos de la Pieza</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>ID:</label>
+                <span><strong>{{ pieza.id }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Nombre Piedra:</label>
+                <span>{{ pieza.nombre_piedra|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Número:</label>
+                <span>{{ pieza.numero|default:"-" }}</span>
+            </div>
+            {% if pieza.fecha_extraccion %}
+            <div class="detail-item">
+                <label>Fecha Extracción:</label>
+                <span>{{ pieza.fecha_extraccion|date:"d/m/Y" }}</span>
+            </div>
+            {% endif %}
+            {% if pieza.equipo_minero %}
+            <div class="detail-item">
+                <label>Equipo Minero:</label>
+                <span>{{ pieza.equipo_minero.nombre_equipo }}</span>
+            </div>
+            {% endif %}
+            {% if pieza.equipo_corte %}
+            <div class="detail-item">
+                <label>Equipo de Corte:</label>
+                <span>{{ pieza.equipo_corte.nombre_equipo }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <a href="{% url 'mineria_le_stage:lista_piezas_corte_cantera' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

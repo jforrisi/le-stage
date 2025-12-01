@@ -1,0 +1,69 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Lista de Artículos - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Gestión de Artículos</h2>
+    <a href="{% url 'crear_articulo' %}" class="btn btn-primary">Nuevo Artículo</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_articulos' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por descripción, código o ID..." class="search-input">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_articulos' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if articulos %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Precio Costo</th>
+                    <th>Precio Venta</th>
+                    <th>Stock</th>
+                    <th>Tipo IVA</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for articulo in articulos %}
+                <tr>
+                    <td>{{ articulo.arcodigo|default:"-" }}</td>
+                    <td>{{ articulo.ardescri|default:"-" }}</td>
+                    <td>${{ articulo.prcosto|default:"0.00" }}</td>
+                    <td>${{ articulo.prventa|default:"0.00" }}</td>
+                    <td>{{ articulo.stock|default:"0.00" }}</td>
+                    <td>{{ articulo.tpoiva|default:"-" }}</td>
+                    <td>
+                        {% if articulo.activo == 'SI' %}
+                            <span class="badge badge-success">Activo</span>
+                        {% else %}
+                            <span class="badge badge-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'detalle_articulo' articulo.pk %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'editar_articulo' articulo.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'eliminar_articulo' articulo.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron artículos.</p>
+            <a href="{% url 'crear_articulo' %}" class="btn btn-primary">Crear Primer Artículo</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

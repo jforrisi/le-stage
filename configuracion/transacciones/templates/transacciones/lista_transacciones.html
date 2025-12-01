@@ -1,0 +1,37 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Transacciones - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+</div>
+
+<div class="table-container">
+    {% if transacciones %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha</th>
+                    <th>Documento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaccion in transacciones %}
+                <tr>
+                    <td><strong>{{ transaccion.transaccion }}</strong></td>
+                    <td>{{ transaccion.fecha|date:"d/m/Y H:i" }}</td>
+                    <td>{{ transaccion.documento_id|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No hay transacciones registradas.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,48 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Costo - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Costo</h2>
+    <a href="{% url 'mineria_le_stage:lista_costos' %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="alert alert-warning">
+    <h3>¿Está seguro que desea eliminar este costo?</h3>
+    <p>Esta acción no se puede deshacer.</p>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos del Costo</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Equipo:</label>
+                <span>{{ costo.id_equipo.nombre_equipo }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Fecha:</label>
+                <span>{{ costo.fecha|date:"m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Rubro:</label>
+                <span>{{ costo.get_rubro_display }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Costo:</label>
+                <span><strong>$ {{ costo.costo_dolares|floatformat:2 }}</strong></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <a href="{% url 'mineria_le_stage:lista_costos' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

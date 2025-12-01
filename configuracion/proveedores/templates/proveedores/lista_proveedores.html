@@ -1,0 +1,67 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Lista de Proveedores - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Gestión de Proveedores</h2>
+    <a href="{% url 'crear_proveedor' %}" class="btn btn-primary">Nuevo Proveedor</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_proveedores' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por código, razón social, email o RUT..." class="search-input">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_proveedores' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if proveedores %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Razón Social</th>
+                    <th>RUT</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proveedor in proveedores %}
+                <tr>
+                    <td>{{ proveedor.codigo|default:"-" }}</td>
+                    <td>{{ proveedor.razon|default:"-" }}</td>
+                    <td>{{ proveedor.rut|default:"-" }}</td>
+                    <td>{{ proveedor.email|default:"-" }}</td>
+                    <td>{{ proveedor.telefono|default:"-" }}</td>
+                    <td>
+                        {% if proveedor.activo == 'SI' %}
+                            <span class="badge badge-success">Activo</span>
+                        {% else %}
+                            <span class="badge badge-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'detalle_proveedor' proveedor.pk %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'editar_proveedor' proveedor.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'eliminar_proveedor' proveedor.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron proveedores.</p>
+            <a href="{% url 'crear_proveedor' %}" class="btn btn-primary">Crear Primer Proveedor</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

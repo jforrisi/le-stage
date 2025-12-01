@@ -1,0 +1,54 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Sub Familias - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Gestión de Sub Familias</h2>
+    <a href="{% url 'crear_subfamilia' %}" class="btn btn-primary">Nueva Sub Familia</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_subfamilias' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por código o nombre..." class="search-input">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_subfamilias' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if subfamilias %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Familia</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subfamilia in subfamilias %}
+                <tr>
+                    <td><strong>{{ subfamilia.codigo|default:"-" }}</strong></td>
+                    <td>{{ subfamilia.familia.nombre }}</td>
+                    <td>{{ subfamilia.nombre }}</td>
+                    <td class="actions">
+                        <a href="{% url 'editar_subfamilia' subfamilia.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'eliminar_subfamilia' subfamilia.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron sub familias.</p>
+            <a href="{% url 'crear_subfamilia' %}" class="btn btn-primary">Crear Primera Sub Familia</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

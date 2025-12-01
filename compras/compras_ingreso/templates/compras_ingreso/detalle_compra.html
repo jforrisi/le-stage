@@ -1,0 +1,135 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <div class="header-actions">
+        <a href="{% url 'compras_ingreso:editar_compra' compra.transaccion %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'compras_ingreso:eliminar_compra' compra.transaccion %}" class="btn btn-danger">Eliminar</a>
+        <a href="{% url 'compras_ingreso:lista_compras' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos del Cabezal</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Transacción:</label>
+                <span><strong>{{ compra.transaccion }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Proveedor:</label>
+                <span>{{ compra.id_proveedor.razon|default:compra.id_proveedor.nombre_comercial }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Tipo de Documento:</label>
+                <span>{{ compra.tipo_documento.nombre }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Serie:</label>
+                <span>{{ compra.serie_documento|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Número:</label>
+                <span>{{ compra.numero_documento }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Forma de Pago:</label>
+                <span>{{ compra.get_forma_pago_display }}</span>
+            </div>
+            {% if compra.forma_pago == 'CONTADO' and compra.disponibilidad %}
+            <div class="detail-item">
+                <label>Disponibilidad:</label>
+                <span>{{ compra.disponibilidad.nombre }}</span>
+            </div>
+            {% endif %}
+            {% if compra.forma_pago == 'CREDITO' %}
+            <div class="detail-item">
+                <label>Plazo:</label>
+                <span>{{ compra.plazo|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Fecha Vencimiento:</label>
+                <span>{% if compra.fecha_vencimiento %}{{ compra.fecha_vencimiento|date:"d/m/Y" }}{% else %}-{% endif %}</span>
+            </div>
+            {% endif %}
+            <div class="detail-item">
+                <label>Fecha Documento:</label>
+                <span>{{ compra.fecha_documento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Fecha Movimiento:</label>
+                <span>{{ compra.fecha_movimiento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Moneda:</label>
+                <span>{{ compra.moneda.codigo }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Precio con IVA Incluido:</label>
+                <span>{{ compra.get_precio_iva_inc_display }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Monotributista:</label>
+                <span>{{ compra.get_monotributista_display }}</span>
+            </div>
+            {% if compra.observaciones %}
+            <div class="detail-item full-width">
+                <label>Observaciones:</label>
+                <span>{{ compra.observaciones }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h3>Líneas de Compra</h3>
+        {% if lineas %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Línea</th>
+                        <th>Artículo</th>
+                        <th>Cantidad</th>
+                        <th>Precio Original</th>
+                        <th>Descuento (%)</th>
+                        <th>Precio Neto</th>
+                        <th>Sub Total</th>
+                        <th>IVA</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linea in lineas %}
+                    <tr>
+                        <td>{{ linea.linea }}</td>
+                        <td>{{ linea.id_articulo.nombre }}</td>
+                        <td>{{ linea.cantidad }}</td>
+                        <td>{{ compra.moneda.codigo }} {{ linea.precio_original|floatformat:2 }}</td>
+                        <td>{{ linea.descuento|floatformat:2 }}</td>
+                        <td>{{ compra.moneda.codigo }} {{ linea.precio_neto|floatformat:2 }}</td>
+                        <td>{{ compra.moneda.codigo }} {{ linea.sub_total|floatformat:2 }}</td>
+                        <td>{{ compra.moneda.codigo }} {{ linea.iva|floatformat:2 }}</td>
+                        <td><strong>{{ compra.moneda.codigo }} {{ linea.total|floatformat:2 }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" style="text-align: right;"><strong>TOTALES:</strong></td>
+                        <td><strong>{{ compra.moneda.codigo }} {{ compra.sub_total|floatformat:2 }}</strong></td>
+                        <td><strong>{{ compra.moneda.codigo }} {{ compra.iva|floatformat:2 }}</strong></td>
+                        <td><strong>{{ compra.moneda.codigo }} {{ compra.importe_total|floatformat:2 }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        {% else %}
+            <p>No hay líneas registradas.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

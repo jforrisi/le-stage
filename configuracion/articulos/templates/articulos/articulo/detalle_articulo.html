@@ -1,0 +1,101 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Detalle de Artículo - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Detalle del Artículo</h2>
+    <div class="header-actions">
+        <a href="{% url 'editar_articulo' articulo.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'lista_articulos' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h3>{{ articulo.nombre }}</h3>
+            <span class="badge badge-info">{{ articulo.producto_id }}</span>
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-row">
+                <strong>Tipo de Artículo:</strong>
+                <span>{{ articulo.tipo_articulo.nombre }} ({{ articulo.tipo_articulo.codigo }})</span>
+            </div>
+            {% if articulo.idsubfamilia %}
+            <div class="detail-row">
+                <strong>Sub Familia:</strong>
+                <span>{{ articulo.idsubfamilia.nombre }} - {{ articulo.idsubfamilia.familia.nombre }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <strong>Precio de Venta:</strong>
+                <span>{{ articulo.precio_venta }} {{ articulo.moneda_venta.nombre|default:"-" }}</span>
+            </div>
+            {% if articulo.iva %}
+            <div class="detail-row">
+                <strong>IVA:</strong>
+                <span>{{ articulo.iva }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <strong>Unidad de Venta:</strong>
+                <span>{{ articulo.get_UNIDAD_VENTA_display }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Unidad de Stock:</strong>
+                <span>{{ articulo.get_UNIDAD_STOCK_display }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Unidad de Compra:</strong>
+                <span>{{ articulo.get_UNIDAD_COMPRA_display }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Loteable:</strong>
+                <span>{% if articulo.LOTEABLE == 'SI' %}<span class="badge badge-success">Sí</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Activo Comercial:</strong>
+                <span>{% if articulo.ACTIVO_COMERCIAL == 'SI' %}<span class="badge badge-success">Sí</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Activo Stock:</strong>
+                <span>{% if articulo.ACTIVO_STOCK == 'SI' %}<span class="badge badge-success">Sí</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Activo Compras:</strong>
+                <span>{% if articulo.ACTIVO_COMPRAS == 'SI' %}<span class="badge badge-success">Sí</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Activo Producción:</strong>
+                <span>{% if articulo.ACTIVO_PRODUCCION == 'SI' %}<span class="badge badge-success">Sí</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</span>
+            </div>
+            {% if articulo.PESO %}
+            <div class="detail-row">
+                <strong>Peso:</strong>
+                <span>{{ articulo.PESO }} {{ articulo.get_UNIDAD_PESO_display|default:"" }}</span>
+            </div>
+            {% endif %}
+            {% if articulo.VOLUMEN %}
+            <div class="detail-row">
+                <strong>Volumen:</strong>
+                <span>{{ articulo.VOLUMEN }} {{ articulo.get_UNIDAD_VOLUMEN_display|default:"" }}</span>
+            </div>
+            {% endif %}
+            {% if articulo.observaciones %}
+            <div class="detail-row">
+                <strong>Observaciones:</strong>
+                <span>{{ articulo.observaciones }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="detail-actions">
+            <a href="{% url 'editar_articulo' articulo.pk %}" class="btn btn-warning">Editar Artículo</a>
+            <a href="{% url 'eliminar_articulo' articulo.pk %}" class="btn btn-danger">Eliminar Artículo</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

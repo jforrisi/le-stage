@@ -1,0 +1,88 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:crear_produccion_equipo' %}" class="btn btn-primary">Nueva Producción</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <select name="equipo_id" class="form-control" style="display: inline-block; width: auto;">
+                <option value="">Todos los equipos</option>
+                {% for equipo in equipos %}
+                <option value="{{ equipo.id_equipo }}" {% if equipo_seleccionado == equipo.id_equipo %}selected{% endif %}>
+                    {{ equipo.nombre_equipo }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary">Filtrar</button>
+            {% if equipo_seleccionado %}
+            <a href="{% url 'mineria_le_stage:lista_produccion_equipos' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if producciones %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>Mes/Año</th>
+                    <th>Total Puntos Calculados</th>
+                    <th>Total Valuación</th>
+                    <th>Total Kilos</th>
+                    <th>Precio Promedio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in producciones %}
+                <tr>
+                    <td>{{ item.equipo.nombre_equipo }}</td>
+                    <td>{{ item.mes_año|date:"m/Y" }}</td>
+                    <td><strong>{{ item.total_puntos|floatformat:2 }}</strong></td>
+                    <td>$ {{ item.total_valuacion|floatformat:2 }}</td>
+                    <td>{{ item.total_kilos|floatformat:2 }}</td>
+                    <td>$ {{ item.precio_promedio|floatformat:2 }}</td>
+                    <td class="actions">
+                        <a href="{% url 'mineria_le_stage:editar_produccion_equipo' item.equipo.id_equipo item.mes_año|date:'Y-m-d' %}" class="btn btn-sm btn-warning">Ver/Editar</a>
+                        <a href="{% url 'mineria_le_stage:eliminar_produccion_equipo_mes' item.equipo.id_equipo item.mes_año|date:'Y-m-d' %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if producciones.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if producciones.has_previous %}
+                <a href="?page={{ producciones.previous_page_number }}{% if equipo_seleccionado %}&equipo_id={{ equipo_seleccionado }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ producciones.number }} de {{ producciones.paginator.num_pages }}
+            </span>
+            
+            {% if producciones.has_next %}
+                <a href="?page={{ producciones.next_page_number }}{% if equipo_seleccionado %}&equipo_id={{ equipo_seleccionado }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron producciones.</p>
+            <a href="{% url 'mineria_le_stage:crear_produccion_equipo' %}" class="btn btn-primary">Crear Primera Producción</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

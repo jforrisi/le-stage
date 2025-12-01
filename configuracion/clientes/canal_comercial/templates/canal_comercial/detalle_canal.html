@@ -1,0 +1,51 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Detalle de Canal Comercial - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Detalle del Canal Comercial</h2>
+    <div class="header-actions">
+        <a href="{% url 'editar_canal' canal.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'lista_canales' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h3>{{ canal.nombre }}</h3>
+            {% if canal.activo == 'SI' %}
+                <span class="badge badge-success">Activo</span>
+            {% else %}
+                <span class="badge badge-danger">Inactivo</span>
+            {% endif %}
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-row">
+                <strong>ID:</strong>
+                <span>{{ canal.id }}</span>
+            </div>
+            
+            {% if canal.descripcion %}
+            <div class="detail-row">
+                <strong>Descripción:</strong>
+                <span>{{ canal.descripcion }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="detail-row">
+                <strong>Fecha/Hora:</strong>
+                <span>{{ canal.fchhor|date:"d/m/Y H:i" }}</span>
+            </div>
+        </div>
+        
+        <div class="detail-actions">
+            <a href="{% url 'editar_canal' canal.pk %}" class="btn btn-warning">Editar Canal</a>
+            <a href="{% url 'eliminar_canal' canal.pk %}" class="btn btn-danger">Eliminar Canal</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

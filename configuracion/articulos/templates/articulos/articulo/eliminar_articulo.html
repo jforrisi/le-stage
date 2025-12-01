@@ -1,0 +1,33 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Artículo - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Artículo</h2>
+    <a href="{% url 'lista_articulos' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="delete-container">
+    <div class="delete-card">
+        <div class="delete-warning">
+            <h3>¿Está seguro que desea eliminar este artículo?</h3>
+            <p>Esta acción no se puede deshacer.</p>
+        </div>
+        
+        <div class="delete-info">
+            <h4>{{ articulo.nombre }}</h4>
+            <p><strong>ID Producto:</strong> {{ articulo.producto_id|default:"-" }}</p>
+        </div>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+                <a href="{% url 'lista_articulos' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

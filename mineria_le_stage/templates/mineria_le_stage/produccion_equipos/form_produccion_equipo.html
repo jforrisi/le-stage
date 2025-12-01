@@ -1,0 +1,243 @@
+{% extends 'clientes/base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:lista_produccion_equipos' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form" id="produccion-form">
+        {% csrf_token %}
+        
+        {% if cabezal_form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ cabezal_form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <!-- CABEZAL: Equipo + Mes/Año -->
+        <div class="card mb-4" style="background-color: #f8f9fa; padding: 20px;">
+            <h4 style="margin-bottom: 20px;">Cabezal</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ cabezal_form.mes_año.id_for_label }}">{{ cabezal_form.mes_año.label }}</label>
+                        {{ cabezal_form.mes_año }}
+                        {% if cabezal_form.mes_año.errors %}
+                            <div class="error-message">{{ cabezal_form.mes_año.errors }}</div>
+                        {% endif %}
+                        <small class="form-text">Seleccione mes y año</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ cabezal_form.id_equipo.id_for_label }}">{{ cabezal_form.id_equipo.label }}</label>
+                        {{ cabezal_form.id_equipo }}
+                        {% if cabezal_form.id_equipo.errors %}
+                            <div class="error-message">{{ cabezal_form.id_equipo.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TABLA DE LÍNEAS -->
+        <div class="card">
+            <h4 style="margin: 20px 0;">Producción por Piedra</h4>
+            {{ formset.management_form }}
+            
+            {% if formset.non_form_errors %}
+                <div class="alert alert-danger">
+                    {{ formset.non_form_errors }}
+                </div>
+            {% endif %}
+            
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tabla-produccion">
+                    <thead>
+                        <tr>
+                            <th>Piedra/Cantera</th>
+                            <th>KPI</th>
+                            <th>Puntos</th>
+                            <th>Valor Monetario</th>
+                            <th>Kilos</th>
+                            <th>Precio Promedio</th>
+                            <th>Puntos Calculados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form_linea in formset %}
+                        <tr class="fila-produccion">
+                            <td>
+                                {{ form_linea.piedra_cantera }}
+                                {{ form_linea.piedra_nombre }}
+                                {% if form_linea.piedra_nombre.errors %}
+                                    <div class="error-message">{{ form_linea.piedra_nombre.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form_linea.kpi_display }}
+                                {{ form_linea.kpi_valor }}
+                                {% if form_linea.kpi_display.errors %}
+                                    <div class="error-message">{{ form_linea.kpi_display.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form_linea.puntos }}
+                                {% if form_linea.puntos.errors %}
+                                    <div class="error-message">{{ form_linea.puntos.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="col-valuacion">
+                                {{ form_linea.valuacion }}
+                                {% if form_linea.valuacion.errors %}
+                                    <div class="error-message">{{ form_linea.valuacion.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="col-kilos">
+                                {{ form_linea.kilos }}
+                                {% if form_linea.kilos.errors %}
+                                    <div class="error-message">{{ form_linea.kilos.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="col-precio-promedio">
+                                <span class="precio-promedio-display">$ 0.00</span>
+                            </td>
+                            <td class="col-puntos-calculados">
+                                {{ form_linea.puntos_calculados }}
+                                {% if form_linea.puntos_calculados.errors %}
+                                    <div class="error-message">{{ form_linea.puntos_calculados.errors }}</div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr style="background-color: #f8f9fa; font-weight: bold;">
+                            <td colspan="3" style="text-align: right;">TOTALES:</td>
+                            <td id="total-valuacion">$ 0.00</td>
+                            <td id="total-kilos">0.00</td>
+                            <td id="total-precio-promedio">$ 0.00</td>
+                            <td id="total-puntos-calculados">0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        
+        <div class="form-actions" style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'mineria_le_stage:lista_produccion_equipos' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabla = document.getElementById('tabla-produccion');
+    const filas = tabla.querySelectorAll('tbody tr.fila-produccion');
+    
+    function calcularPrecioPromedio(valuacion, kilos) {
+        if (kilos > 0) {
+            return (valuacion / kilos).toFixed(2);
+        }
+        return '0.00';
+    }
+    
+    function calcularTotales() {
+        let totalValuacion = 0;
+        let totalKilos = 0;
+        let totalPuntosCalculados = 0;
+        
+        filas.forEach(function(fila) {
+            const valuacionInput = fila.querySelector('input[name$="-valuacion"]');
+            const kilosInput = fila.querySelector('input[name$="-kilos"]');
+            const puntosCalculadosInput = fila.querySelector('input[name$="-puntos_calculados"]');
+            
+            if (valuacionInput) {
+                totalValuacion += parseFloat(valuacionInput.value) || 0;
+            }
+            if (kilosInput) {
+                totalKilos += parseFloat(kilosInput.value) || 0;
+            }
+            if (puntosCalculadosInput) {
+                totalPuntosCalculados += parseFloat(puntosCalculadosInput.value) || 0;
+            }
+        });
+        
+        // Calcular precio promedio total
+        const precioPromedioTotal = calcularPrecioPromedio(totalValuacion, totalKilos);
+        
+        // Actualizar totales en el footer
+        document.getElementById('total-valuacion').textContent = '$ ' + totalValuacion.toFixed(2);
+        document.getElementById('total-kilos').textContent = totalKilos.toFixed(2);
+        document.getElementById('total-precio-promedio').textContent = '$ ' + precioPromedioTotal;
+        document.getElementById('total-puntos-calculados').textContent = totalPuntosCalculados.toFixed(2);
+    }
+    
+    filas.forEach(function(fila) {
+        const puntosInput = fila.querySelector('input[name$="-puntos"]');
+        const valuacionInput = fila.querySelector('input[name$="-valuacion"]');
+        const kilosInput = fila.querySelector('input[name$="-kilos"]');
+        const puntosCalculadosInput = fila.querySelector('input[name$="-puntos_calculados"]');
+        const kpiValor = fila.querySelector('input[name$="-kpi_valor"]');
+        const precioPromedioDisplay = fila.querySelector('.precio-promedio-display');
+        
+        function calcularPrecioPromedioLinea() {
+            if (!precioPromedioDisplay) return;
+            
+            const valuacion = parseFloat(valuacionInput.value) || 0;
+            const kilos = parseFloat(kilosInput.value) || 0;
+            
+            const precioPromedio = calcularPrecioPromedio(valuacion, kilos);
+            precioPromedioDisplay.textContent = '$ ' + precioPromedio;
+        }
+        
+        function calcularPuntos() {
+            if (!puntosInput || !puntosCalculadosInput || !kpiValor) return;
+            
+            const puntos = parseFloat(puntosInput.value) || 0;
+            const kpi = kpiValor.value;
+            
+            let puntosCalculados = 0;
+            // El KPI puede ser 'Kg' o 'Valuación'
+            if (kpi === 'Kg') {
+                const kilos = parseFloat(kilosInput.value) || 0;
+                puntosCalculados = kilos * puntos;
+            } else if (kpi === 'Valuación') {
+                const valuacion = parseFloat(valuacionInput.value) || 0;
+                puntosCalculados = valuacion * puntos;
+            }
+            
+            if (puntosCalculadosInput) {
+                puntosCalculadosInput.value = puntosCalculados.toFixed(2);
+            }
+            
+            // Recalcular precio promedio y totales
+            calcularPrecioPromedioLinea();
+            calcularTotales();
+        }
+        
+        if (puntosInput) puntosInput.addEventListener('input', calcularPuntos);
+        if (valuacionInput) {
+            valuacionInput.addEventListener('input', calcularPuntos);
+            valuacionInput.addEventListener('input', calcularPrecioPromedioLinea);
+        }
+        if (kilosInput) {
+            kilosInput.addEventListener('input', calcularPuntos);
+            kilosInput.addEventListener('input', calcularPrecioPromedioLinea);
+        }
+        
+        // Calcular inicialmente
+        calcularPuntos();
+    });
+    
+    // Calcular totales inicialmente
+    calcularTotales();
+});
+</script>
+{% endblock %}

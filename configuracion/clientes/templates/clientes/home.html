@@ -1,0 +1,71 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Inicio - FIT{% endblock %}
+
+{% block page_title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <div class="welcome-section">
+        <h1>Bienvenido al Sistema FIT</h1>
+        <p class="welcome-text">Sistema de Gestión Empresarial</p>
+        <p class="empresa-name">{{ empresa_nombre|default:"Le Stage" }}</p>
+    </div>
+
+    <div class="dashboard-cards">
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <span class="material-symbols-outlined">people</span>
+            </div>
+            <div class="card-content">
+                <h3>Clientes</h3>
+                <p>Gestiona tu base de clientes</p>
+                <a href="{% url 'lista_clientes' %}" class="btn btn-primary">Ver Clientes</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <span class="material-symbols-outlined">business</span>
+            </div>
+            <div class="card-content">
+                <h3>Proveedores</h3>
+                <p>Administra tus proveedores</p>
+                <a href="{% url 'lista_proveedores' %}" class="btn btn-primary">Ver Proveedores</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <span class="material-symbols-outlined">inventory_2</span>
+            </div>
+            <div class="card-content">
+                <h3>Artículos</h3>
+                <p>Controla tu inventario</p>
+                <a href="{% url 'lista_articulos' %}" class="btn btn-primary">Ver Artículos</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <span class="material-symbols-outlined">store</span>
+            </div>
+            <div class="card-content">
+                <h3>Canales Comerciales</h3>
+                <p>Gestiona canales de venta</p>
+                <a href="{% url 'lista_canales' %}" class="btn btn-primary">Ver Canales</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h2>Acciones Rápidas</h2>
+        <div class="action-buttons">
+            <a href="{% url 'crear_cliente' %}" class="btn btn-success">Nuevo Cliente</a>
+            <a href="{% url 'crear_proveedor' %}" class="btn btn-success">Nuevo Proveedor</a>
+            <a href="{% url 'crear_articulo' %}" class="btn btn-success">Nuevo Artículo</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

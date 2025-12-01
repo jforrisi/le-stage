@@ -1,0 +1,143 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'lista_proveedores' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.codigo.id_for_label }}">{{ form.codigo.label }}</label>
+            {{ form.codigo }}
+            <small class="form-text">Se generará automáticamente con formato PROV000001</small>
+            {% if form.codigo.errors %}<div class="error-message">{{ form.codigo.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.razon.id_for_label }}">{{ form.razon.label }}</label>
+            {{ form.razon }}
+            {% if form.razon.errors %}<div class="error-message">{{ form.razon.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.nombre_comercial.id_for_label }}">{{ form.nombre_comercial.label }}</label>
+            {{ form.nombre_comercial }}
+            {% if form.nombre_comercial.errors %}<div class="error-message">{{ form.nombre_comercial.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.rut.id_for_label }}">{{ form.rut.label }}</label>
+            {{ form.rut }}
+            {% if form.rut.errors %}<div class="error-message">{{ form.rut.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.domicilio.id_for_label }}">{{ form.domicilio.label }}</label>
+            {{ form.domicilio }}
+            {% if form.domicilio.errors %}<div class="error-message">{{ form.domicilio.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.pais.id_for_label }}">{{ form.pais.label }}</label>
+                {{ form.pais }}
+                {% if form.pais.errors %}<div class="error-message">{{ form.pais.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group" id="departamento-group">
+                <label for="{{ form.departamento.id_for_label }}">{{ form.departamento.label }}</label>
+                {{ form.departamento }}
+                {% if form.departamento.errors %}<div class="error-message">{{ form.departamento.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.formadepago.id_for_label }}">{{ form.formadepago.label }}</label>
+            {{ form.formadepago }}
+            {% if form.formadepago.errors %}<div class="error-message">{{ form.formadepago.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.telefono.id_for_label }}">{{ form.telefono.label }}</label>
+                {{ form.telefono }}
+                {% if form.telefono.errors %}<div class="error-message">{{ form.telefono.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.celular.id_for_label }}">{{ form.celular.label }}</label>
+                {{ form.celular }}
+                {% if form.celular.errors %}<div class="error-message">{{ form.celular.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.contacto.id_for_label }}">{{ form.contacto.label }}</label>
+            {{ form.contacto }}
+            {% if form.contacto.errors %}<div class="error-message">{{ form.contacto.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+            {{ form.email }}
+            {% if form.email.errors %}<div class="error-message">{{ form.email.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.monotributista.id_for_label }}">{{ form.monotributista.label }}</label>
+                {{ form.monotributista }}
+                {% if form.monotributista.errors %}<div class="error-message">{{ form.monotributista.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.activo.id_for_label }}">{{ form.activo.label }}</label>
+                {{ form.activo }}
+                {% if form.activo.errors %}<div class="error-message">{{ form.activo.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.observaciones.id_for_label }}">{{ form.observaciones.label }}</label>
+            {{ form.observaciones }}
+            {% if form.observaciones.errors %}<div class="error-message">{{ form.observaciones.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'lista_proveedores' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paisSelect = document.getElementById('id_pais');
+    const departamentoGroup = document.getElementById('departamento-group');
+    const departamentoSelect = document.getElementById('id_departamento');
+    
+    function toggleDepartamento() {
+        if (paisSelect.value === 'UY') {
+            departamentoGroup.style.display = 'block';
+            departamentoSelect.required = true;
+        } else {
+            departamentoGroup.style.display = 'none';
+            departamentoSelect.required = false;
+            departamentoSelect.value = '';
+        }
+    }
+    
+    // Ejecutar al cargar la página
+    toggleDepartamento();
+    
+    // Ejecutar cuando cambie el país
+    if (paisSelect) {
+        paisSelect.addEventListener('change', toggleDepartamento);
+    }
+});
+</script>
+{% endblock %}
+

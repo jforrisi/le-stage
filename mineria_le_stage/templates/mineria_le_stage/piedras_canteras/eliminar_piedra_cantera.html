@@ -1,0 +1,48 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Piedra/Cantera - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Piedra/Cantera</h2>
+    <a href="{% url 'mineria_le_stage:lista_piedras_canteras' %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="alert alert-warning">
+    <h3>¿Está seguro que desea eliminar esta piedra/cantera?</h3>
+    <p>Esta acción no se puede deshacer.</p>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos de la Piedra/Cantera</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Familia:</label>
+                <span>{{ piedra.familia_producto.nombre }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Producto:</label>
+                <span>{{ piedra.producto.nombre }}</span>
+            </div>
+            <div class="detail-item">
+                <label>KPI:</label>
+                <span>{{ piedra.get_kpi_display }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Puntos:</label>
+                <span><strong>{{ piedra.puntos|floatformat:2 }}</strong></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <a href="{% url 'mineria_le_stage:lista_piedras_canteras' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

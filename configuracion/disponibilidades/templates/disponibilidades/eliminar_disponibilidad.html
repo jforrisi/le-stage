@@ -1,0 +1,61 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Disponibilidad - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Disponibilidad</h2>
+    <a href="{% url 'lista_disponibilidades' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <div class="alert alert-warning">
+        <h3>¿Está seguro que desea eliminar esta disponibilidad?</h3>
+        <p>Esta acción no se puede deshacer.</p>
+    </div>
+
+    <div class="detail-card">
+        <div class="detail-body">
+            <div class="detail-row">
+                <strong>Código:</strong>
+                <span>{{ disponibilidad.codigo }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Tipo:</strong>
+                <span>
+                    {% if disponibilidad.tipo == 'BANCO' %}
+                        Banco
+                    {% elif disponibilidad.tipo == 'IEDE' %}
+                        IEDE
+                    {% elif disponibilidad.tipo == 'CAJA' %}
+                        Caja
+                    {% endif %}
+                </span>
+            </div>
+            <div class="detail-row">
+                <strong>Institución:</strong>
+                <span>{{ disponibilidad.nombre_institucion }}</span>
+            </div>
+            {% if disponibilidad.alias %}
+            <div class="detail-row">
+                <strong>Alias:</strong>
+                <span>{{ disponibilidad.alias }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <strong>Moneda:</strong>
+                <span>{{ disponibilidad.moneda.nombre }}</span>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+            <a href="{% url 'lista_disponibilidades' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

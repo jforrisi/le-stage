@@ -1,0 +1,88 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:crear_resultado_equipo' %}" class="btn btn-primary">Nuevo Resultado</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <select name="equipo_id" class="form-control" style="display: inline-block; width: auto;">
+                <option value="">Todos los equipos</option>
+                {% for equipo in equipos %}
+                <option value="{{ equipo.id_equipo }}" {% if equipo_seleccionado == equipo.id_equipo %}selected{% endif %}>
+                    {{ equipo.nombre_equipo }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary">Filtrar</button>
+            {% if equipo_seleccionado %}
+            <a href="{% url 'mineria_le_stage:lista_resultados_equipo' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if resultados %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>Piedra/Cantera</th>
+                    <th>Mes/Año</th>
+                    <th>Valuación</th>
+                    <th>Kilos</th>
+                    <th>Puntos Calculados</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resultado in resultados %}
+                <tr>
+                    <td>{{ resultado.id_equipo.nombre_equipo }}</td>
+                    <td>{{ resultado.piedra.producto.nombre }}</td>
+                    <td>{{ resultado.mes_año|date:"m/Y" }}</td>
+                    <td>$ {{ resultado.valuacion|floatformat:2 }}</td>
+                    <td>{{ resultado.kilos|floatformat:2 }}</td>
+                    <td><strong>{{ resultado.puntos_calculados|floatformat:2 }}</strong></td>
+                    <td class="actions">
+                        <a href="{% url 'mineria_le_stage:editar_resultado_equipo' resultado.id %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'mineria_le_stage:eliminar_resultado_equipo' resultado.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if resultados.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if resultados.has_previous %}
+                <a href="?page={{ resultados.previous_page_number }}{% if equipo_seleccionado %}&equipo_id={{ equipo_seleccionado }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ resultados.number }} de {{ resultados.paginator.num_pages }}
+            </span>
+            
+            {% if resultados.has_next %}
+                <a href="?page={{ resultados.next_page_number }}{% if equipo_seleccionado %}&equipo_id={{ equipo_seleccionado }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron resultados.</p>
+            <a href="{% url 'mineria_le_stage:crear_resultado_equipo' %}" class="btn btn-primary">Crear Primer Resultado</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

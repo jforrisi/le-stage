@@ -1,0 +1,78 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:lista_resultados_equipo' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.id_equipo.id_for_label }}">{{ form.id_equipo.label }}</label>
+            {{ form.id_equipo }}
+            {% if form.id_equipo.errors %}
+                <div class="error-message">{{ form.id_equipo.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.piedra.id_for_label }}">{{ form.piedra.label }}</label>
+            {{ form.piedra }}
+            {% if form.piedra.errors %}
+                <div class="error-message">{{ form.piedra.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.mes_año.id_for_label }}">{{ form.mes_año.label }}</label>
+            {{ form.mes_año }}
+            {% if form.mes_año.errors %}
+                <div class="error-message">{{ form.mes_año.errors }}</div>
+            {% endif %}
+            <small class="form-text">Ingrese el primer día del mes (ej: 2025-11-01 para noviembre 2025)</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.valuacion.id_for_label }}">{{ form.valuacion.label }}</label>
+            {{ form.valuacion }}
+            {% if form.valuacion.errors %}
+                <div class="error-message">{{ form.valuacion.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.kilos.id_for_label }}">{{ form.kilos.label }}</label>
+            {{ form.kilos }}
+            {% if form.kilos.errors %}
+                <div class="error-message">{{ form.kilos.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.puntos_calculados.id_for_label }}">{{ form.puntos_calculados.label }}</label>
+            {{ form.puntos_calculados }}
+            {% if form.puntos_calculados.errors %}
+                <div class="error-message">{{ form.puntos_calculados.errors }}</div>
+            {% endif %}
+            <small class="form-text">Se calcula automáticamente al guardar según KPI y puntos vigentes</small>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'mineria_le_stage:lista_resultados_equipo' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

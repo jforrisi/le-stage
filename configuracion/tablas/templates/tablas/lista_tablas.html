@@ -1,0 +1,123 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Tablas de Base de Datos - FIT{% endblock %}
+
+{% block page_title %}Tablas de Base de Datos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Exportar Tablas de Base de Datos</h2>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_tablas' %}">
+        <label for="tabla" style="display: block; margin-bottom: 10px; font-weight: bold;">Seleccionar Tabla:</label>
+        <select name="tabla" id="tabla" class="search-input" style="width: 500px; padding: 8px; margin-right: 10px;" onchange="this.form.submit()">
+            <option value="">-- Seleccione una tabla --</option>
+            {% regroup tablas by modulo as tablas_por_modulo %}
+            {% for grupo in tablas_por_modulo %}
+                <optgroup label="{{ grupo.grouper }}">
+                    {% for tabla in grupo.list %}
+                        <option value="{{ tabla.nombre }}" {% if tabla.nombre == tabla_seleccionada %}selected{% endif %}>
+                            {{ tabla.nombre }} - {{ tabla.nombre_amigable }}
+                        </option>
+                    {% endfor %}
+                </optgroup>
+            {% endfor %}
+        </select>
+        {% if tabla_seleccionada %}
+            <a href="{% url 'exportar_tabla_excel' tabla_seleccionada %}" class="btn btn-primary" style="margin-left: 10px;">
+                📥 Descargar Excel
+            </a>
+        {% endif %}
+    </form>
+</div>
+
+{% if tabla_seleccionada %}
+    <div style="margin-top: 20px;">
+        <h3>{{ nombre_amigable|default:tabla_seleccionada }}</h3>
+        <p style="color: #666; margin-bottom: 15px;">Tabla: <strong>{{ tabla_seleccionada }}</strong></p>
+    </div>
+
+    <div class="table-container">
+        {% if datos %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        {% for columna in columnas %}
+                            <th>{{ columna }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in datos %}
+                        <tr>
+                            {% for valor in fila %}
+                                <td>
+                                    {% if valor is None %}
+                                        <span style="color: #999;">-</span>
+                                    {% else %}
+                                        {{ valor }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div style="margin-top: 15px; color: #666;">
+                <strong>Total de registros:</strong> {{ datos|length }}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>La tabla está vacía o no se pudieron cargar los datos.</p>
+            </div>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="empty-state" style="margin-top: 40px;">
+        <p>Seleccione una tabla del menú desplegable para ver sus datos.</p>
+    </div>
+{% endif %}
+
+<style>
+    .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+    
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .table th {
+        background-color: #f8f9fa;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
+</style>
+{% endblock %}
+

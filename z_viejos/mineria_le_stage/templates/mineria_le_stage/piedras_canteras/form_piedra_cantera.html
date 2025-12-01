@@ -1,0 +1,106 @@
+{% extends 'clientes/base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:lista_piedras_canteras' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form" id="piedra-form">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.familia_producto.id_for_label }}">{{ form.familia_producto.label }}</label>
+            {{ form.familia_producto }}
+            {% if form.familia_producto.errors %}
+                <div class="error-message">{{ form.familia_producto.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.producto.id_for_label }}">{{ form.producto.label }}</label>
+            {{ form.producto }}
+            {% if form.producto.errors %}
+                <div class="error-message">{{ form.producto.errors }}</div>
+            {% endif %}
+            <small class="form-text">Seleccione primero una familia para ver los productos disponibles</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.kpi.id_for_label }}">{{ form.kpi.label }}</label>
+            {{ form.kpi }}
+            {% if form.kpi.errors %}
+                <div class="error-message">{{ form.kpi.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.puntos.id_for_label }}">{{ form.puntos.label }}</label>
+            {{ form.puntos }}
+            {% if form.puntos.errors %}
+                <div class="error-message">{{ form.puntos.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'mineria_le_stage:lista_piedras_canteras' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const familiaSelect = document.getElementById('id_familia_producto');
+    const productoSelect = document.getElementById('id_producto');
+    
+    if (familiaSelect && productoSelect) {
+        familiaSelect.addEventListener('change', function() {
+            const familiaId = this.value;
+            
+            if (familiaId) {
+                // Habilitar select de productos
+                productoSelect.disabled = false;
+                productoSelect.innerHTML = '<option value="">Cargando...</option>';
+                
+                // Hacer petición AJAX
+                fetch(`{% url 'mineria_le_stage:obtener_productos_familia' %}?familia_id=${familiaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        productoSelect.innerHTML = '<option value="">Seleccione un producto...</option>';
+                        data.productos.forEach(producto => {
+                            const option = document.createElement('option');
+                            option.value = producto.id;
+                            option.textContent = producto.nombre;
+                            productoSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        productoSelect.innerHTML = '<option value="">Error al cargar productos</option>';
+                    });
+            } else {
+                productoSelect.disabled = true;
+                productoSelect.innerHTML = '<option value="">Seleccione primero una familia</option>';
+            }
+        });
+        
+        // Si ya hay una familia seleccionada (edición), cargar productos
+        if (familiaSelect.value) {
+            familiaSelect.dispatchEvent(new Event('change'));
+        }
+    }
+});
+</script>
+{% endblock %}
+

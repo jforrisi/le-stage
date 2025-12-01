@@ -1,0 +1,51 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Detalle de Artículo - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Detalle del Artículo</h2>
+    <div class="header-actions">
+        <a href="{% url 'editar_articulo' articulo.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'lista_articulos' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h3>{{ articulo.ardescri|default:"Sin descripción" }}</h3>
+            {% if articulo.activo == 'SI' %}
+                <span class="badge badge-success">Activo</span>
+            {% else %}
+                <span class="badge badge-danger">Inactivo</span>
+            {% endif %}
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-row">
+                <strong>Código:</strong>
+                <span>{{ articulo.arcodigo|default:"-" }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Precio Costo:</strong>
+                <span>${{ articulo.prcosto|default:"0.00" }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Precio Venta:</strong>
+                <span>${{ articulo.prventa|default:"0.00" }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Stock:</strong>
+                <span>{{ articulo.stock|default:"0.00" }}</span>
+            </div>
+        </div>
+        
+        <div class="detail-actions">
+            <a href="{% url 'editar_articulo' articulo.pk %}" class="btn btn-warning">Editar Artículo</a>
+            <a href="{% url 'eliminar_articulo' articulo.pk %}" class="btn btn-danger">Eliminar Artículo</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

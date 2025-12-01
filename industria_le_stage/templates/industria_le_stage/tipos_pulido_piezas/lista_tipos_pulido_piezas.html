@@ -1,0 +1,78 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'industria_le_stage:crear_tipo_pulido_piezas' %}" class="btn btn-primary">Nuevo Tipo de Pulido</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por nombre..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'industria_le_stage:lista_tipos_pulido_piezas' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if tipos %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tipo in tipos %}
+                <tr>
+                    <td><strong>{{ tipo.id }}</strong></td>
+                    <td>{{ tipo.nombre }}</td>
+                    <td>{{ tipo.observaciones|default:"-"|truncatewords:10 }}</td>
+                    <td class="actions">
+                        <a href="{% url 'industria_le_stage:editar_tipo_pulido_piezas' tipo.id %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'industria_le_stage:eliminar_tipo_pulido_piezas' tipo.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if tipos.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if tipos.has_previous %}
+                <a href="?page={{ tipos.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ tipos.number }} de {{ tipos.paginator.num_pages }}
+                {% if tipos.paginator.count %}
+                    ({{ tipos.paginator.count }} registro{{ tipos.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if tipos.has_next %}
+                <a href="?page={{ tipos.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron tipos de pulido de piezas.</p>
+            <a href="{% url 'industria_le_stage:crear_tipo_pulido_piezas' %}" class="btn btn-primary">Crear Primer Tipo de Pulido</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

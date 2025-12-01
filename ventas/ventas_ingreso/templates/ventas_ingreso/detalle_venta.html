@@ -1,0 +1,131 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <div class="header-actions">
+        <a href="{% url 'ventas_ingreso:editar_venta' venta.transaccion %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'ventas_ingreso:eliminar_venta' venta.transaccion %}" class="btn btn-danger">Eliminar</a>
+        <a href="{% url 'ventas_ingreso:lista_ventas' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos del Cabezal</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Transacción:</label>
+                <span><strong>{{ venta.transaccion }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Cliente:</label>
+                <span>{{ venta.id_cliente.razon|default:venta.id_cliente.nombre_comercial }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Tipo de Documento:</label>
+                <span>{{ venta.tipo_documento.nombre }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Serie:</label>
+                <span>{{ venta.serie_documento|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Número:</label>
+                <span>{{ venta.numero_documento }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Forma de Pago:</label>
+                <span>{{ venta.get_forma_pago_display }}</span>
+            </div>
+            {% if venta.forma_pago == 'CONTADO' and venta.disponibilidad %}
+            <div class="detail-item">
+                <label>Disponibilidad:</label>
+                <span>{{ venta.disponibilidad.nombre }}</span>
+            </div>
+            {% endif %}
+            {% if venta.forma_pago == 'CREDITO' %}
+            <div class="detail-item">
+                <label>Plazo:</label>
+                <span>{{ venta.plazo|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Fecha Vencimiento:</label>
+                <span>{% if venta.fecha_vencimiento %}{{ venta.fecha_vencimiento|date:"d/m/Y" }}{% else %}-{% endif %}</span>
+            </div>
+            {% endif %}
+            <div class="detail-item">
+                <label>Fecha Documento:</label>
+                <span>{{ venta.fecha_documento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Fecha Movimiento:</label>
+                <span>{{ venta.fecha_movimiento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Moneda:</label>
+                <span>{{ venta.moneda.codigo }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Precio con IVA Incluido:</label>
+                <span>{{ venta.get_precio_iva_inc_display }}</span>
+            </div>
+            {% if venta.observaciones %}
+            <div class="detail-item full-width">
+                <label>Observaciones:</label>
+                <span>{{ venta.observaciones }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h3>Líneas de Venta</h3>
+        {% if lineas %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Línea</th>
+                        <th>Artículo</th>
+                        <th>Cantidad</th>
+                        <th>Precio Original</th>
+                        <th>Descuento (%)</th>
+                        <th>Precio Neto</th>
+                        <th>Sub Total</th>
+                        <th>IVA</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linea in lineas %}
+                    <tr>
+                        <td>{{ linea.linea }}</td>
+                        <td>{{ linea.id_articulo.nombre }}</td>
+                        <td>{{ linea.cantidad }}</td>
+                        <td>{{ venta.moneda.codigo }} {{ linea.precio_original|floatformat:2 }}</td>
+                        <td>{{ linea.descuento|floatformat:2 }}</td>
+                        <td>{{ venta.moneda.codigo }} {{ linea.precio_neto|floatformat:2 }}</td>
+                        <td>{{ venta.moneda.codigo }} {{ linea.sub_total|floatformat:2 }}</td>
+                        <td>{{ venta.moneda.codigo }} {{ linea.iva|floatformat:2 }}</td>
+                        <td><strong>{{ venta.moneda.codigo }} {{ linea.total|floatformat:2 }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" style="text-align: right;"><strong>TOTALES:</strong></td>
+                        <td><strong>{{ venta.moneda.codigo }} {{ venta.sub_total|floatformat:2 }}</strong></td>
+                        <td><strong>{{ venta.moneda.codigo }} {{ venta.iva|floatformat:2 }}</strong></td>
+                        <td><strong>{{ venta.moneda.codigo }} {{ venta.importe_total|floatformat:2 }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        {% else %}
+            <p>No hay líneas registradas.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

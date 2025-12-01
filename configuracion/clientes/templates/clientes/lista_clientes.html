@@ -1,0 +1,75 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Lista de Clientes - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Gestión de Clientes</h2>
+    <a href="{% url 'crear_cliente' %}" class="btn btn-primary">Nuevo Cliente</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_clientes' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por código, nombre comercial, razón social, email o RUT..." class="search-input">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_clientes' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if clientes %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre Comercial</th>
+                    <th>Razón Social</th>
+                    <th>RUT</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Departamento</th>
+                    <th>Canal Comercial</th>
+                    <th>Forma de Pago</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.codigo }}</td>
+                    <td>{{ cliente.nombre_comercial|default:"-" }}</td>
+                    <td>{{ cliente.razon_social|default:"-" }}</td>
+                    <td>{{ cliente.rut|default:"-" }}</td>
+                    <td>{{ cliente.email|default:"-" }}</td>
+                    <td>{{ cliente.telefono|default:"-" }}</td>
+                    <td>{{ cliente.get_departamento_display|default:"-" }}</td>
+                    <td>{{ cliente.canal_comercial|default:"-" }}</td>
+                    <td>{{ cliente.get_forma_pago_display|default:"-" }}</td>
+                    <td>
+                        {% if cliente.activo == 'SI' %}
+                            <span class="badge badge-success">Activo</span>
+                        {% else %}
+                            <span class="badge badge-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'detalle_cliente' cliente.pk %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'eliminar_cliente' cliente.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron clientes.</p>
+            <a href="{% url 'crear_cliente' %}" class="btn btn-primary">Crear Primer Cliente</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

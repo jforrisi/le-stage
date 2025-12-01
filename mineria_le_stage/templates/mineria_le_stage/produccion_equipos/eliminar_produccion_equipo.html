@@ -1,0 +1,45 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Producción - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Producción</h2>
+    <a href="{% url 'mineria_le_stage:lista_produccion_equipos' %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="alert alert-warning">
+    <h3>¿Está seguro que desea eliminar todas las producciones de este equipo y mes?</h3>
+    <p>Se eliminarán <strong>{{ count }}</strong> registro(s) de producción.</p>
+    <p><strong>Esta acción no se puede deshacer.</strong></p>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos de la Producción</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Equipo:</label>
+                <span>{{ equipo.nombre_equipo }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Mes/Año:</label>
+                <span>{{ mes_año|date:"m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Registros a eliminar:</label>
+                <span><strong>{{ count }}</strong></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <a href="{% url 'mineria_le_stage:lista_produccion_equipos' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

@@ -1,0 +1,83 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Devoluciones Ventas - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'ventas_devoluciones:crear_venta_devolucion' %}" class="btn btn-primary">Nueva Devolución</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por transacción, número, cliente..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'ventas_devoluciones:lista_ventas_devoluciones' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if devoluciones %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Transacción</th>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Fecha Documento</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for devolucion in devoluciones %}
+                <tr>
+                    <td><strong>{{ devolucion.transaccion }}</strong></td>
+                    <td>{{ devolucion.numero_documento }}</td>
+                    <td>{{ devolucion.id_cliente.razon|default:devolucion.id_cliente.nombre_comercial }}</td>
+                    <td>{{ devolucion.fecha_documento|date:"d/m/Y" }}</td>
+                    <td><strong>{{ devolucion.importe_total|floatformat:2 }}</strong></td>
+                    <td class="actions">
+                        <a href="{% url 'ventas_devoluciones:detalle_venta_devolucion' devolucion.transaccion %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'ventas_devoluciones:editar_venta_devolucion' devolucion.transaccion %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'ventas_devoluciones:eliminar_venta_devolucion' devolucion.transaccion %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if devoluciones.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if devoluciones.has_previous %}
+                <a href="?page={{ devoluciones.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ devoluciones.number }} de {{ devoluciones.paginator.num_pages }}
+                {% if devoluciones.paginator.count %}
+                    ({{ devoluciones.paginator.count }} registro{{ devoluciones.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if devoluciones.has_next %}
+                <a href="?page={{ devoluciones.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron devoluciones.</p>
+            <a href="{% url 'ventas_devoluciones:crear_venta_devolucion' %}" class="btn btn-primary">Crear Primera Devolución</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

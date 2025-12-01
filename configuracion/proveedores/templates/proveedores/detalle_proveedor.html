@@ -1,0 +1,57 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Detalle de Proveedor - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Detalle del Proveedor</h2>
+    <div class="header-actions">
+        <a href="{% url 'editar_proveedor' proveedor.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'lista_proveedores' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h3>{{ proveedor.razon|default:"Sin nombre" }}</h3>
+            {% if proveedor.activo == 'SI' %}
+                <span class="badge badge-success">Activo</span>
+            {% else %}
+                <span class="badge badge-danger">Inactivo</span>
+            {% endif %}
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-row">
+                <strong>Código:</strong>
+                <span>{{ proveedor.codigo|default:"-" }}</span>
+            </div>
+            {% if proveedor.rut %}
+            <div class="detail-row">
+                <strong>RUT:</strong>
+                <span>{{ proveedor.rut }}</span>
+            </div>
+            {% endif %}
+            {% if proveedor.email %}
+            <div class="detail-row">
+                <strong>Email:</strong>
+                <span>{{ proveedor.email }}</span>
+            </div>
+            {% endif %}
+            {% if proveedor.telefono %}
+            <div class="detail-row">
+                <strong>Teléfono:</strong>
+                <span>{{ proveedor.telefono }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="detail-actions">
+            <a href="{% url 'editar_proveedor' proveedor.pk %}" class="btn btn-warning">Editar Proveedor</a>
+            <a href="{% url 'eliminar_proveedor' proveedor.pk %}" class="btn btn-danger">Eliminar Proveedor</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

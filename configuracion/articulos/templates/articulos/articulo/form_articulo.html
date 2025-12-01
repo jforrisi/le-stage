@@ -1,0 +1,396 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'lista_articulos' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.producto_id.id_for_label }}">{{ form.producto_id.label }}</label>
+            {{ form.producto_id }}
+            <small class="form-text">Se generará automáticamente según el tipo seleccionado</small>
+            {% if form.producto_id.errors %}<div class="error-message">{{ form.producto_id.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+            {{ form.nombre }}
+            {% if form.nombre.errors %}<div class="error-message">{{ form.nombre.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.tipo_articulo.id_for_label }}">{{ form.tipo_articulo.label }}</label>
+                {{ form.tipo_articulo }}
+                {% if form.tipo_articulo.errors %}<div class="error-message">{{ form.tipo_articulo.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.idsubfamilia.id_for_label }}">{{ form.idsubfamilia.label }}</label>
+                {{ form.idsubfamilia }}
+                {% if form.idsubfamilia.errors %}<div class="error-message">{{ form.idsubfamilia.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.precio_venta.id_for_label }}">{{ form.precio_venta.label }}</label>
+                {{ form.precio_venta }}
+                {% if form.precio_venta.errors %}<div class="error-message">{{ form.precio_venta.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.moneda_venta.id_for_label }}">{{ form.moneda_venta.label }}</label>
+                {{ form.moneda_venta }}
+                {% if form.moneda_venta.errors %}<div class="error-message">{{ form.moneda_venta.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.iva.id_for_label }}">{{ form.iva.label }}</label>
+                {{ form.iva }}
+                {% if form.iva.errors %}<div class="error-message">{{ form.iva.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <h3>Unidades de Medida</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.UNIDAD_VENTA.id_for_label }}">{{ form.UNIDAD_VENTA.label }}</label>
+                {{ form.UNIDAD_VENTA }}
+                {% if form.UNIDAD_VENTA.errors %}<div class="error-message">{{ form.UNIDAD_VENTA.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.UNIDAD_STOCK.id_for_label }}">{{ form.UNIDAD_STOCK.label }}</label>
+                {{ form.UNIDAD_STOCK }}
+                {% if form.UNIDAD_STOCK.errors %}<div class="error-message">{{ form.UNIDAD_STOCK.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.UNIDAD_COMPRA.id_for_label }}">{{ form.UNIDAD_COMPRA.label }}</label>
+                {{ form.UNIDAD_COMPRA }}
+                {% if form.UNIDAD_COMPRA.errors %}<div class="error-message">{{ form.UNIDAD_COMPRA.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <h3>Estados Activos</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.ACTIVO_COMERCIAL.id_for_label }}">{{ form.ACTIVO_COMERCIAL.label }}</label>
+                {{ form.ACTIVO_COMERCIAL }}
+                {% if form.ACTIVO_COMERCIAL.errors %}<div class="error-message">{{ form.ACTIVO_COMERCIAL.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.ACTIVO_STOCK.id_for_label }}">{{ form.ACTIVO_STOCK.label }}</label>
+                {{ form.ACTIVO_STOCK }}
+                {% if form.ACTIVO_STOCK.errors %}<div class="error-message">{{ form.ACTIVO_STOCK.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.ACTIVO_COMPRAS.id_for_label }}">{{ form.ACTIVO_COMPRAS.label }}</label>
+                {{ form.ACTIVO_COMPRAS }}
+                {% if form.ACTIVO_COMPRAS.errors %}<div class="error-message">{{ form.ACTIVO_COMPRAS.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.ACTIVO_PRODUCCION.id_for_label }}">{{ form.ACTIVO_PRODUCCION.label }}</label>
+                {{ form.ACTIVO_PRODUCCION }}
+                {% if form.ACTIVO_PRODUCCION.errors %}<div class="error-message">{{ form.ACTIVO_PRODUCCION.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.LOTEABLE.id_for_label }}">{{ form.LOTEABLE.label }}</label>
+            {{ form.LOTEABLE }}
+            {% if form.LOTEABLE.errors %}<div class="error-message">{{ form.LOTEABLE.errors }}</div>{% endif %}
+        </div>
+
+        <h3>Peso y Volumen</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.UNIDAD_PESO.id_for_label }}">{{ form.UNIDAD_PESO.label }}</label>
+                {{ form.UNIDAD_PESO }}
+                {% if form.UNIDAD_PESO.errors %}<div class="error-message">{{ form.UNIDAD_PESO.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.PESO.id_for_label }}">{{ form.PESO.label }}</label>
+                {{ form.PESO }}
+                {% if form.PESO.errors %}<div class="error-message">{{ form.PESO.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.UNIDAD_VOLUMEN.id_for_label }}">{{ form.UNIDAD_VOLUMEN.label }}</label>
+                {{ form.UNIDAD_VOLUMEN }}
+                {% if form.UNIDAD_VOLUMEN.errors %}<div class="error-message">{{ form.UNIDAD_VOLUMEN.errors }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.VOLUMEN.id_for_label }}">{{ form.VOLUMEN.label }}</label>
+                {{ form.VOLUMEN }}
+                {% if form.VOLUMEN.errors %}<div class="error-message">{{ form.VOLUMEN.errors }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.observaciones.id_for_label }}">{{ form.observaciones.label }}</label>
+            {{ form.observaciones }}
+            {% if form.observaciones.errors %}<div class="error-message">{{ form.observaciones.errors }}</div>{% endif %}
+        </div>
+
+        <h3>Códigos Proveedor</h3>
+        <div class="codigos-proveedor-section">
+            <div class="codigos-proveedor-header">
+                <p>Asocie códigos de proveedor a este artículo. Presione F2 en el campo proveedor para buscar.</p>
+            </div>
+            
+            <!-- Formulario para agregar nuevo código -->
+            <div class="nuevo-codigo-proveedor-form">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="nuevo-proveedor-select">Proveedor</label>
+                        <div class="proveedor-select-wrapper">
+                            <select id="nuevo-proveedor-select" class="form-control proveedor-select">
+                                <option value="">Seleccione un proveedor...</option>
+                            </select>
+                            <button type="button" class="btn btn-sm btn-info btn-buscar-proveedor" title="Presione F2 o haga clic para buscar">
+                                <span class="material-symbols-outlined">search</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="nuevo-codigo-proveedor">Código Proveedor</label>
+                        <input type="text" id="nuevo-codigo-proveedor" class="form-control" placeholder="Ingrese el código">
+                    </div>
+                    <div class="form-group" style="flex: 0 0 auto; padding-top: 1.75rem;">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn-agregar-codigo">Agregar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabla de códigos guardados -->
+            <div class="codigos-proveedor-tabla">
+                <table class="table" id="tabla-codigos-proveedor">
+                    <thead>
+                        <tr>
+                            <th>Proveedor</th>
+                            <th>Código Proveedor</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="codigos-proveedor-tbody">
+                        {% for codigo_prov in codigos_proveedor %}
+                        <tr data-codigo-id="{{ codigo_prov.id }}" data-proveedor-id="{{ codigo_prov.proveedor.pk }}" data-codigo="{{ codigo_prov.codigo_proveedor }}">
+                            <td>
+                                <input type="hidden" name="proveedores" value="{{ codigo_prov.proveedor.pk }}">
+                                <span class="proveedor-nombre">{{ codigo_prov.proveedor.codigo }} - {{ codigo_prov.proveedor.razon|default:codigo_prov.proveedor.nombre_comercial }}</span>
+                            </td>
+                            <td>
+                                <input type="hidden" name="codigos" value="{{ codigo_prov.codigo_proveedor }}">
+                                <span class="codigo-valor">{{ codigo_prov.codigo_proveedor }}</span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-warning btn-editar-codigo" title="Editar">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger btn-eliminar-codigo" title="Eliminar">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if not codigos_proveedor %}
+                <div class="empty-state-small">
+                    <p>No hay códigos de proveedor asociados. Agregue uno usando el formulario de arriba.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'lista_articulos' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<!-- Modal para búsqueda de proveedores -->
+<div id="modal-buscar-proveedor" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Buscar Proveedor</h3>
+            <button type="button" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="busqueda-proveedor-input" class="form-control" placeholder="Buscar por razón social o nombre comercial...">
+            <div id="resultados-proveedores" class="resultados-busqueda"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.codigos-proveedor-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.codigos-proveedor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.codigos-proveedor-header p {
+    margin: 0;
+    color: #6b7280;
+}
+
+.codigo-proveedor-row {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+}
+
+.proveedor-select-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.proveedor-select-wrapper select {
+    flex: 1;
+}
+
+.btn-buscar-proveedor {
+    padding: 0.375rem 0.75rem;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    color: #374151;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.resultados-busqueda {
+    margin-top: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.resultado-item {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.resultado-item:hover {
+    background-color: #f3f4f6;
+}
+
+.resultado-codigo {
+    font-weight: 600;
+    color: #374151;
+}
+
+.resultado-nombre {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.no-results {
+    padding: 1rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+.codigos-proveedor-tabla {
+    margin-top: 1.5rem;
+}
+
+.codigos-proveedor-tabla .table {
+    margin-bottom: 0;
+}
+
+.empty-state-small {
+    padding: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+    background: white;
+    border-radius: 0.375rem;
+    border: 1px dashed #e5e7eb;
+}
+
+.codigos-proveedor-tabla .table td {
+    vertical-align: middle;
+}
+
+.proveedor-select-edit {
+    width: 100%;
+}
+</style>
+
+{% load static %}
+<script src="{% static 'articulos/js/codigos_proveedor.js' %}"></script>
+{% endblock %}
+

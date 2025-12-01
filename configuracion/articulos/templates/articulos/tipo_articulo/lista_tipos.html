@@ -1,0 +1,76 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Tipos de Artículo - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Gestión de Tipos de Artículo</h2>
+    <a href="{% url 'crear_tipo_articulo' %}" class="btn btn-primary">Nuevo Tipo</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_tipos_articulo' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por código o nombre..." class="search-input">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_tipos_articulo' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if tipos %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Stockeable</th>
+                    <th>Se Compra</th>
+                    <th>Loteable</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tipo in tipos %}
+                <tr>
+                    <td><strong>{{ tipo.codigo }}</strong></td>
+                    <td>{{ tipo.nombre }}</td>
+                    <td>
+                        {% if tipo.stockeable == 'SI' %}
+                            <span class="badge badge-success">Sí</span>
+                        {% else %}
+                            <span class="badge badge-secondary">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if tipo.se_compra == 'SI' %}
+                            <span class="badge badge-success">Sí</span>
+                        {% else %}
+                            <span class="badge badge-secondary">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if tipo.loteable == 'SI' %}
+                            <span class="badge badge-success">Sí</span>
+                        {% else %}
+                            <span class="badge badge-secondary">No</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'editar_tipo_articulo' tipo.codigo %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'eliminar_tipo_articulo' tipo.codigo %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron tipos de artículo.</p>
+            <a href="{% url 'crear_tipo_articulo' %}" class="btn btn-primary">Crear Primer Tipo</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

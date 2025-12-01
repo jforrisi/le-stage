@@ -1,0 +1,44 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Equipo - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Equipo</h2>
+    <a href="{% url 'mineria_le_stage:detalle_equipo' equipo.id_equipo %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="alert alert-warning">
+    <h3>¿Está seguro que desea eliminar este equipo?</h3>
+    <p>Esta acción no se puede deshacer.</p>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos del Equipo</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>ID Equipo:</label>
+                <span><strong>{{ equipo.id_equipo }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Nombre Equipo:</label>
+                <span>{{ equipo.nombre_equipo }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Responsable:</label>
+                <span>{{ equipo.responsable }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <a href="{% url 'mineria_le_stage:detalle_equipo' equipo.id_equipo %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

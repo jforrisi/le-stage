@@ -1,0 +1,58 @@
+podes interpretar todod esto?? no programes, dime si o no
+
+este bloque va en una carptea aprte de configuración la carpeta compras
+
+compras tiene 3 partes: son 3 tablas independientes cabezal, líneas y vencimiento_pactado
+recorda que todas las tablas se llaman al inicio compras_cabeza, compras_lineas, compras_vencimiento_pactado
+
+ líneas y cabezal factura van en el mismo front,  vencimiento_pactado va en otro front aparte, lo vemos despúes, asi que no cres la tabla compras_vencimiento_pactado
+
+
+cabezal debe indicar si los precios a carga son con iva incluido o sin iva incluido. 
+
+campos del cabezal
+transacción: analiza la tabla transacciones, ve el último, analiza el último numero y le suma uno, si es la primera del mes xq el anterior arranca disitno es la yymm000001
+id_proveedor: para elegir en el front end se puede elegir con el nombre comercial o con la razón social, pero guarda el id_proveedor
+tipo_documento: la calve es facprov de la tabla documentos pero va Factura Proveedor en el front
+serie_documento
+nuero_documento
+forma_pago
+fecha_documento
+fecha_movimiento
+moneda: muestra las monedas de la tabla configuración
+precio_iva_inc: es si o no según si el precio tiene o no iva incluido
+plazo: esto es si forma_de_pago es crédito, si es contado no corresponde. Aca hay 3 posibilidades: el que está definido para el proveedor en el maestro del proveedor, aparece el que tieen el proveedor y sino dice uno que sea "elegir", lo que habilita el campo fecha_vencimiento y el usuario pone la fecha que quiera. Otra opción es fijar "VENCIMIENTO_PACTADO" eso hace deja el campo fecha de vencimiento con NAN y vamos a crear una sección para esto
+fecha_vencimineto: 
+si está la definida por el proveedor: los plazos son varios, si el susario en plazo pone "elegir" si la variable fin_de_mes de plazo es 1, entonces, el vencimieto es fin de mes, por ejmplo si es una cmpra del 20 de noviembre del 2025, empieza a contar desde el ultiom día de noviembre, si fin es 0 solo suma desde el día. A modo de ejemplo fin_de_mes 1 y plazo 15 para el 19 noviembre del 2025 esa factura vence el 15 de diciembre del 2025, si es fin_de_mes igual 0 y plazo 15 vence el 4 de diciembre.
+si poene elegir: se abre el campo y el usuario elige una fecha
+si es VENCIMIETO_PACTADO: queda oscura y no se puede cambiar y no guarda nada 
+observaciones
+fchhor: muestra la hora en la que se hizo el documento
+usuario: dejar el campo rservado
+monotributista: muestras si el proveedor es monotributista o no, en función a lo que está en el maestro del proveedor
+sub_total: a priori dps suma el sub total de las lineas
+iva: a priori dps suma el iva de las lineas
+importe_total: a priori dps suma el iva de las lineas
+
+
+forma_pago:
+contado o crédito
+si es contado, muestra las opciones que están en disponiblidades que es donde ingresó la guita
+
+
+compras_lineas
+transaccion
+id_articulo
+cantidad
+precio_origianl -indicar que si el cabezal es iva incluido, va el precio iva incluido y sino lo contrario-
+descuento, si es 5, se usa 0.05
+precio_neto, es precio_original * (1-descuento) en el front lo muestra pero nada más
+sub_total, en el front lo muestra pero no se puede modificar. Si el cabezal es iva incluido, entonces hace precio_neto / iva del producto, si el cabezal no es iva incluido, es el precio_neto  
+iva: calcula el iva, si el cabezal dice iva incluido, entonces es el precio_neto / (1+iva del prodcuto) * iva del prodcuto, si es no es iva includo el cabezal entonces es precio_neto * iva del producto
+total: sub_total + iva
+
+
+
+
+
+no programes dime si lo entendes

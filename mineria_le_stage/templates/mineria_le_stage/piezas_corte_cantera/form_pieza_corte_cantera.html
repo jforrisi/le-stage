@@ -1,0 +1,133 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:lista_piezas_corte_cantera' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <!-- Línea 1: nombre, numero, fecha, kilos cantera, valuacion -->
+        <div class="form-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 15px;">
+            <div class="form-group">
+                <label for="{{ form.nombre_piedra.id_for_label }}">{{ form.nombre_piedra.label }}</label>
+                {{ form.nombre_piedra }}
+                {% if form.nombre_piedra.errors %}
+                    <div class="error-message">{{ form.nombre_piedra.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.numero.id_for_label }}">{{ form.numero.label }}</label>
+                {{ form.numero }}
+                {% if form.numero.errors %}
+                    <div class="error-message">{{ form.numero.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.fecha_extraccion.id_for_label }}">{{ form.fecha_extraccion.label }}</label>
+                {{ form.fecha_extraccion }}
+                {% if form.fecha_extraccion.errors %}
+                    <div class="error-message">{{ form.fecha_extraccion.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.kilos_en_cantera.id_for_label }}">{{ form.kilos_en_cantera.label }}</label>
+                {{ form.kilos_en_cantera }}
+                {% if form.kilos_en_cantera.errors %}
+                    <div class="error-message">{{ form.kilos_en_cantera.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.valuacion_cantera.id_for_label }}">{{ form.valuacion_cantera.label }}</label>
+                {{ form.valuacion_cantera }}
+                {% if form.valuacion_cantera.errors %}
+                    <div class="error-message">{{ form.valuacion_cantera.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Línea 2: equipo minero, equipo corte, porcentaje valuacion equipo corte, ganancia equipo corte -->
+        <div class="form-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px;">
+            <div class="form-group">
+                <label for="{{ form.equipo_minero.id_for_label }}">{{ form.equipo_minero.label }}</label>
+                {{ form.equipo_minero }}
+                {% if form.equipo_minero.errors %}
+                    <div class="error-message">{{ form.equipo_minero.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.equipo_corte.id_for_label }}">{{ form.equipo_corte.label }}</label>
+                {{ form.equipo_corte }}
+                {% if form.equipo_corte.errors %}
+                    <div class="error-message">{{ form.equipo_corte.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.porcentaje_valuacion_corte.id_for_label }}">{{ form.porcentaje_valuacion_corte.label }}</label>
+                {{ form.porcentaje_valuacion_corte }}
+                {% if form.porcentaje_valuacion_corte.errors %}
+                    <div class="error-message">{{ form.porcentaje_valuacion_corte.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.ganancia_equipo_corte.id_for_label }}">{{ form.ganancia_equipo_corte.label }}</label>
+                {{ form.ganancia_equipo_corte }}
+                {% if form.ganancia_equipo_corte.errors %}
+                    <div class="error-message">{{ form.ganancia_equipo_corte.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'mineria_le_stage:lista_piezas_corte_cantera' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const valuacionField = document.getElementById('{{ form.valuacion_cantera.id_for_label }}');
+    const porcentajeField = document.getElementById('{{ form.porcentaje_valuacion_corte.id_for_label }}');
+    const gananciaField = document.getElementById('{{ form.ganancia_equipo_corte.id_for_label }}');
+    
+    function calcularGanancia() {
+        const valuacion = parseFloat(valuacionField.value) || 0;
+        const porcentaje = parseFloat(porcentajeField.value) || 0;
+        
+        if (valuacion > 0 && porcentaje > 0) {
+            const ganancia = (valuacion * porcentaje) / 100;
+            gananciaField.value = ganancia.toFixed(2);
+        } else {
+            gananciaField.value = '0.00';
+        }
+    }
+    
+    // Calcular cuando cambian los campos
+    valuacionField.addEventListener('input', calcularGanancia);
+    porcentajeField.addEventListener('input', calcularGanancia);
+    
+    // Calcular al cargar la página si hay valores
+    calcularGanancia();
+});
+</script>
+{% endblock %}
+

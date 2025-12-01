@@ -1,0 +1,46 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Tipo de Pulido - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Tipo de Pulido</h2>
+    <a href="{% url 'industria_le_stage:lista_tipos_pulido_piezas' %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="alert alert-warning">
+    <h3>¿Está seguro que desea eliminar este tipo de pulido?</h3>
+    <p>Esta acción no se puede deshacer.</p>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos del Tipo de Pulido</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>ID:</label>
+                <span><strong>{{ tipo.id }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Nombre:</label>
+                <span>{{ tipo.nombre }}</span>
+            </div>
+            {% if tipo.observaciones %}
+            <div class="detail-item">
+                <label>Observaciones:</label>
+                <span>{{ tipo.observaciones }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <a href="{% url 'industria_le_stage:lista_tipos_pulido_piezas' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

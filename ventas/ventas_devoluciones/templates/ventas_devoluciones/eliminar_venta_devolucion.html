@@ -1,0 +1,57 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Devolución - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Devolución</h2>
+        <a href="{% url 'ventas_devoluciones:detalle_venta_devolucion' venta_devolucion.transaccion %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="alert alert-warning">
+    <h3>¿Está seguro que desea eliminar esta devolución?</h3>
+    <p>Esta acción no se puede deshacer. Se eliminarán:</p>
+    <ul>
+        <li>La devolución <strong>{{ venta_devolucion.transaccion }}</strong></li>
+        <li>Todas las líneas asociadas ({{ venta_devolucion.lineas.count }} línea{{ venta_devolucion.lineas.count|pluralize }})</li>
+        <li>La transacción asociada</li>
+    </ul>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos de la Devolución</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Transacción:</label>
+                <span><strong>{{ venta_devolucion.transaccion }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Cliente:</label>
+                <span>{{ venta_devolucion.id_cliente.razon|default:venta_devolucion.id_cliente.nombre_comercial }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Número:</label>
+                <span>{{ venta_devolucion.numero_documento }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Fecha:</label>
+                <span>{{ venta_devolucion.fecha_documento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Total:</label>
+                <span><strong>{{ venta_devolucion.importe_total|floatformat:2 }}</strong></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <a href="{% url 'ventas_devoluciones:detalle_venta_devolucion' venta_devolucion.transaccion %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

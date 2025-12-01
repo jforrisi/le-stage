@@ -1,0 +1,77 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'industria_le_stage:lista_piezas_corte_cantera_industria' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos Básicos</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>ID:</label>
+                <span>{{ pieza.id }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Nombre Piedra:</label>
+                <span>{{ pieza.nombre_piedra|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Número:</label>
+                <span>{{ pieza.numero|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Equipo Minero:</label>
+                <span>{{ pieza.equipo_minero|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Equipo de Corte:</label>
+                <span>{{ pieza.equipo_corte|default:"-" }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h3>Datos de Industria</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Fecha Industria:</label>
+                <span>{{ pieza.fecha_industria|date:"d/m/Y"|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Kilos en Recepción Industria:</label>
+                <span>{{ pieza.kilos_recepcion_industria|floatformat:2 }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Tipo de Piedra:</label>
+                <span>{{ pieza.get_tipo_piedra_display|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Tipos de Pulido Piezas:</label>
+                <span>{{ pieza.tipo_proceso|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Kilos después del Tallado:</label>
+                <span>{{ pieza.kilos_despues_tallado|floatformat:2 }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Precio por Kilo de Tallado:</label>
+                <span>${{ pieza.precio_por_kilo_tallado|floatformat:2 }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Pulido por Kilo:</label>
+                <span>${{ pieza.pulido_por_kilo|floatformat:2 }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Extra Carlos:</label>
+                <span>{{ pieza.extra_carlos|default:"-" }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

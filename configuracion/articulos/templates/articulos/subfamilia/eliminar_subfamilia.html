@@ -1,0 +1,33 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Sub Familia - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Sub Familia</h2>
+    <a href="{% url 'lista_subfamilias' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="delete-container">
+    <div class="delete-card">
+        <div class="delete-warning">
+            <h3>¿Está seguro que desea eliminar esta sub familia?</h3>
+            <p>Esta acción no se puede deshacer.</p>
+        </div>
+        
+        <div class="delete-info">
+            <h4>{{ subfamilia.nombre }}</h4>
+            <p><strong>Familia:</strong> {{ subfamilia.familia.nombre }}</p>
+        </div>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+                <a href="{% url 'lista_subfamilias' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

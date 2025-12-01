@@ -1,0 +1,37 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <div class="header-actions">
+        <a href="{% url 'mineria_le_stage:editar_equipo_corte' equipo.id_equipo %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'mineria_le_stage:eliminar_equipo_corte' equipo.id_equipo %}" class="btn btn-danger">Eliminar</a>
+        <a href="{% url 'mineria_le_stage:lista_equipos_corte' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos del Equipo Corte</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>ID Equipo:</label>
+                <span><strong>{{ equipo.id_equipo }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Nombre Equipo:</label>
+                <span>{{ equipo.nombre_equipo }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Responsable:</label>
+                <span>{{ equipo.responsable }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+

@@ -1,0 +1,80 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:crear_piedra_cantera' %}" class="btn btn-primary">Nueva Piedra/Cantera</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por producto o familia..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'mineria_le_stage:lista_piedras_canteras' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if piedras %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Familia</th>
+                    <th>Producto</th>
+                    <th>KPI</th>
+                    <th>Puntos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for piedra in piedras %}
+                <tr>
+                    <td>{{ piedra.familia_producto.nombre }}</td>
+                    <td>{{ piedra.producto.nombre }}</td>
+                    <td>{{ piedra.get_kpi_display }}</td>
+                    <td><strong>{{ piedra.puntos|floatformat:2 }}</strong></td>
+                    <td class="actions">
+                        <a href="{% url 'mineria_le_stage:editar_piedra_cantera' piedra.id %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'mineria_le_stage:eliminar_piedra_cantera' piedra.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if piedras.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if piedras.has_previous %}
+                <a href="?page={{ piedras.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ piedras.number }} de {{ piedras.paginator.num_pages }}
+                {% if piedras.paginator.count %}
+                    ({{ piedras.paginator.count }} registro{{ piedras.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if piedras.has_next %}
+                <a href="?page={{ piedras.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron piedras/canteras.</p>
+            <a href="{% url 'mineria_le_stage:crear_piedra_cantera' %}" class="btn btn-primary">Crear Primera Piedra/Cantera</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,57 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Compra - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Eliminar Compra</h2>
+    <a href="{% url 'compras_ingreso:detalle_compra' compra.transaccion %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="alert alert-warning">
+    <h3>¿Está seguro que desea eliminar esta compra?</h3>
+    <p>Esta acción no se puede deshacer. Se eliminarán:</p>
+    <ul>
+        <li>La compra <strong>{{ compra.transaccion }}</strong></li>
+        <li>Todas las líneas asociadas ({{ compra.lineas.count }} línea{{ compra.lineas.count|pluralize }})</li>
+        <li>La transacción asociada</li>
+    </ul>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos de la Compra</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Transacción:</label>
+                <span><strong>{{ compra.transaccion }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Proveedor:</label>
+                <span>{{ compra.id_proveedor.razon|default:compra.id_proveedor.nombre_comercial }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Número:</label>
+                <span>{{ compra.numero_documento }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Fecha:</label>
+                <span>{{ compra.fecha_documento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Total:</label>
+                <span><strong>{{ compra.moneda.codigo }} {{ compra.importe_total|floatformat:2 }}</strong></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+        <a href="{% url 'compras_ingreso:detalle_compra' compra.transaccion %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

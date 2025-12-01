@@ -1,0 +1,88 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:crear_pieza_corte_cantera' %}" class="btn btn-primary">Nueva Pieza</a>
+</div>
+
+<div class="table-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por nombre o número..." class="form-control">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
+            {% if busqueda %}
+            <a href="{% url 'mineria_le_stage:lista_piezas_corte_cantera' %}" class="btn btn-link">Limpiar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if piezas %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Número</th>
+                    <th>Fecha Extracción</th>
+                    <th>Equipo Minero</th>
+                    <th>Equipo Corte</th>
+                    <th>Kilos Cantera</th>
+                    <th>Valuación Cantera</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pieza in piezas %}
+                <tr>
+                    <td><strong>{{ pieza.id }}</strong></td>
+                    <td>{{ pieza.nombre_piedra|default:"-" }}</td>
+                    <td>{{ pieza.numero|default:"-" }}</td>
+                    <td>{{ pieza.fecha_extraccion|date:"d/m/Y"|default:"-" }}</td>
+                    <td>{{ pieza.equipo_minero.nombre_equipo|default:"-" }}</td>
+                    <td>{{ pieza.equipo_corte.nombre_equipo|default:"-" }}</td>
+                    <td>{{ pieza.kilos_en_cantera|floatformat:2|default:"0.00" }}</td>
+                    <td>${{ pieza.valuacion_cantera|floatformat:2|default:"0.00" }}</td>
+                    <td class="actions">
+                        <a href="{% url 'mineria_le_stage:editar_pieza_corte_cantera' pieza.id %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'mineria_le_stage:eliminar_pieza_corte_cantera' pieza.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Paginación -->
+        {% if piezas.has_other_pages %}
+        <div class="pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if piezas.has_previous %}
+                <a href="?page={{ piezas.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">« Anterior</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">« Anterior</span>
+            {% endif %}
+            
+            <span class="pagination-info" style="padding: 5px 15px;">
+                Página {{ piezas.number }} de {{ piezas.paginator.num_pages }}
+                {% if piezas.paginator.count %}
+                    ({{ piezas.paginator.count }} registro{{ piezas.paginator.count|pluralize }})
+                {% endif %}
+            </span>
+            
+            {% if piezas.has_next %}
+                <a href="?page={{ piezas.next_page_number }}{% if busqueda %}&busqueda={{ busqueda|urlencode }}{% endif %}" class="btn btn-sm btn-secondary">Siguiente »</a>
+            {% else %}
+                <span class="btn btn-sm btn-secondary disabled">Siguiente »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron piezas de corte en cantera.</p>
+            <a href="{% url 'mineria_le_stage:crear_pieza_corte_cantera' %}" class="btn btn-primary">Crear Primera Pieza</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

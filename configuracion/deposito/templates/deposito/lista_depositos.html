@@ -1,0 +1,48 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Depósitos - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+</div>
+
+<div class="search-container">
+    <form method="get" action="{% url 'lista_depositos' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por nombre o explicación..." class="search-input">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_depositos' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if depositos %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Explicación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for deposito in depositos %}
+                <tr>
+                    <td><strong>{{ deposito.id }}</strong></td>
+                    <td>{{ deposito.nombre }}</td>
+                    <td>{{ deposito.explicacion|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No hay depósitos registrados{% if busqueda %} que coincidan con la búsqueda{% endif %}.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+

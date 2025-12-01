@@ -1,0 +1,63 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Lista de Canales Comerciales - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Gestión de Canales Comerciales</h2>
+    <a href="{% url 'crear_canal' %}" class="btn btn-primary">Nuevo Canal</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'lista_canales' %}">
+        <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por nombre o descripción..." class="search-input">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_canales' %}" class="btn btn-link">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    {% if canales %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for canal in canales %}
+                <tr>
+                    <td>{{ canal.id }}</td>
+                    <td>{{ canal.nombre }}</td>
+                    <td>{{ canal.descripcion|default:"-"|truncatewords:10 }}</td>
+                    <td>
+                        {% if canal.activo == 'SI' %}
+                            <span class="badge badge-success">Activo</span>
+                        {% else %}
+                            <span class="badge badge-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'detalle_canal' canal.pk %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'editar_canal' canal.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'eliminar_canal' canal.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron canales comerciales.</p>
+            <a href="{% url 'crear_canal' %}" class="btn btn-primary">Crear Primer Canal</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

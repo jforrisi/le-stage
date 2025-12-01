@@ -1,0 +1,40 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Formas de Pago - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+</div>
+
+<div class="table-container">
+    {% if formas_pago %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Plazo en días</th>
+                    <th>Desde fin de mes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forma in formas_pago %}
+                <tr>
+                    <td><strong>{{ forma.codigo }}</strong></td>
+                    <td>{{ forma.descripcion }}</td>
+                    <td>{{ forma.plazo_en_dias }}</td>
+                    <td>{% if forma.fin_de_mes %}Sí{% else %}No{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No hay formas de pago registradas.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+

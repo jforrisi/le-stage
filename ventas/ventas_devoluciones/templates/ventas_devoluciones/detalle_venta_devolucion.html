@@ -1,0 +1,113 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <div class="header-actions">
+        <a href="{% url 'ventas_devoluciones:editar_venta_devolucion' venta_devolucion.transaccion %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'ventas_devoluciones:eliminar_venta_devolucion' venta_devolucion.transaccion %}" class="btn btn-danger">Eliminar</a>
+        <a href="{% url 'ventas_devoluciones:lista_ventas_devoluciones' %}" class="btn btn-secondary">Volver a Lista</a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-section">
+        <h3>Datos del Cabezal</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Transacción:</label>
+                <span><strong>{{ venta_devolucion.transaccion }}</strong></span>
+            </div>
+            <div class="detail-item">
+                <label>Cliente:</label>
+                <span>{{ venta_devolucion.id_cliente.razon|default:venta_devolucion.id_cliente.nombre_comercial }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Tipo de Documento:</label>
+                <span>{{ venta_devolucion.tipo_documento.nombre }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Serie:</label>
+                <span>{{ venta_devolucion.serie_documento|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Número:</label>
+                <span>{{ venta_devolucion.numero_documento }}</span>
+            </div>
+            {% if venta_devolucion.disponibilidad %}
+            <div class="detail-item">
+                <label>Disponibilidad:</label>
+                <span>{{ venta_devolucion.disponibilidad.nombre }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-item">
+                <label>Fecha Documento:</label>
+                <span>{{ venta_devolucion.fecha_documento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Fecha Movimiento:</label>
+                <span>{{ venta_devolucion.fecha_movimiento|date:"d/m/Y H:i" }}</span>
+            </div>
+            {% if venta_devolucion.observaciones %}
+            <div class="detail-item full-width">
+                <label>Observaciones:</label>
+                <span>{{ venta_devolucion.observaciones }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h3>Líneas de Devolución</h3>
+        {% if lineas %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Línea</th>
+                        <th>Artículo</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Sub Total</th>
+                        <th>IVA</th>
+                        <th>Total</th>
+                        <th>Factura Afectada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linea in lineas %}
+                    <tr>
+                        <td>{{ linea.linea }}</td>
+                        <td>{{ linea.id_articulo.nombre }}</td>
+                        <td>{{ linea.cantidad }}</td>
+                        <td>{{ linea.precio|floatformat:2 }}</td>
+                        <td>{{ linea.sub_total|floatformat:2 }}</td>
+                        <td>{{ linea.iva|floatformat:2 }}</td>
+                        <td><strong>{{ linea.total|floatformat:2 }}</strong></td>
+                        <td>
+                            {{ linea.serie_doc_afectado|default:"" }} {{ linea.numero_doc_afectado }}
+                            {% if linea.id_venta_linea %}
+                            <br><small>ID Línea: {{ linea.id_venta_linea.id }}</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" style="text-align: right;"><strong>TOTALES:</strong></td>
+                        <td><strong>{{ venta_devolucion.sub_total|floatformat:2 }}</strong></td>
+                        <td><strong>{{ venta_devolucion.iva|floatformat:2 }}</strong></td>
+                        <td><strong>{{ venta_devolucion.importe_total|floatformat:2 }}</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        {% else %}
+            <p>No hay líneas registradas.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

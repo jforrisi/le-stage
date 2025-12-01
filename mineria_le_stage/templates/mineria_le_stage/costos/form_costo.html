@@ -1,0 +1,135 @@
+{% extends 'clientes/base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - FIT{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'mineria_le_stage:lista_costos' %}" class="btn btn-secondary">Volver a Lista</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form" id="costos-form">
+        {% csrf_token %}
+        
+        {% if cabezal_form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ cabezal_form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <!-- CABEZAL: Equipo + Mes/Año -->
+        <div class="card mb-4" style="background-color: #f8f9fa; padding: 20px;">
+            <h4 style="margin-bottom: 20px;">Cabezal</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ cabezal_form.fecha.id_for_label }}">{{ cabezal_form.fecha.label }}</label>
+                        {{ cabezal_form.fecha }}
+                        {% if cabezal_form.fecha.errors %}
+                            <div class="error-message">{{ cabezal_form.fecha.errors }}</div>
+                        {% endif %}
+                        <small class="form-text">Seleccione mes y año</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ cabezal_form.id_equipo.id_for_label }}">{{ cabezal_form.id_equipo.label }}</label>
+                        {{ cabezal_form.id_equipo }}
+                        {% if cabezal_form.id_equipo.errors %}
+                            <div class="error-message">{{ cabezal_form.id_equipo.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TABLA DE LÍNEAS -->
+        <div class="card">
+            <h4 style="margin: 20px 0;">Costos por Rubro</h4>
+            {{ formset.management_form }}
+            
+            {% if formset.non_form_errors %}
+                <div class="alert alert-danger">
+                    {{ formset.non_form_errors }}
+                </div>
+            {% endif %}
+            
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tabla-costos">
+                    <thead>
+                        <tr>
+                            <th>Rubro</th>
+                            <th>Costo (USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form_linea in formset %}
+                            {% if form_linea.rubro_valor.value %}
+                            <tr class="fila-costo">
+                                <td>
+                                    {{ form_linea.rubro_valor }}
+                                    {{ form_linea.rubro_display }}
+                                    {% if form_linea.rubro_display.errors %}
+                                        <div class="error-message">{{ form_linea.rubro_display.errors }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="col-costo">
+                                    {{ form_linea.costo_dolares }}
+                                    {% if form_linea.costo_dolares.errors %}
+                                        <div class="error-message">{{ form_linea.costo_dolares.errors }}</div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr style="background-color: #f8f9fa; font-weight: bold;">
+                            <td style="text-align: right;">TOTAL:</td>
+                            <td id="total-costo">$ 0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        
+        <div class="form-actions" style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'mineria_le_stage:lista_costos' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabla = document.getElementById('tabla-costos');
+    const filas = tabla.querySelectorAll('tbody tr.fila-costo');
+    
+    function calcularTotal() {
+        let totalCosto = 0;
+        
+        filas.forEach(function(fila) {
+            const costoInput = fila.querySelector('input[name$="-costo_dolares"]');
+            if (costoInput) {
+                totalCosto += parseFloat(costoInput.value) || 0;
+            }
+        });
+        
+        // Actualizar total en el footer
+        document.getElementById('total-costo').textContent = '$ ' + totalCosto.toFixed(2);
+    }
+    
+    filas.forEach(function(fila) {
+        const costoInput = fila.querySelector('input[name$="-costo_dolares"]');
+        if (costoInput) {
+            costoInput.addEventListener('input', calcularTotal);
+        }
+    });
+    
+    // Calcular total inicialmente
+    calcularTotal();
+});
+</script>
+{% endblock %}
